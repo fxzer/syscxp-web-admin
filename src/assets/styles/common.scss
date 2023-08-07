@@ -1,3 +1,33 @@
 .el-icon-s-unfold, .el-icon-s-fold{
 	font-size: 20px;
 }
+.opt-group .el-button {
+	vertical-align: middle;
+}
+.opt-group {
+	margin-bottom: 5px;
+	padding: 5px 10px;
+	background-color: #fff;
+}
+.grid-wrapper {
+	background-color: #fff;
+	padding: 5px 0 ;
+}
+
+// 弹窗
+.el-dialog {
+	border-radius: 6px;
+}
+
+.el-dialog__body {
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.el-dialog .el-dialog__header .el-dialog__headerbtn {
+	transition: .3s ease-in-out;
+}
+
+.el-dialog .el-dialog__header .el-dialog__headerbtn:hover {
+	transform: rotate(180deg);
+}

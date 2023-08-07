@@ -54,7 +54,7 @@ export default {
         if (lastPath.indexOf("login") > -1) {
           lastPath = process.env.BASE_URL;
         }
-        Cookies.set("lastLogoutPath", lastPath, { path: "/" });
+        Cookies.set("lastLogoutPath_CXP_WEB", lastPath, { path: "/" });
         this.$nextTick(() => {
           Cookies.remove("accountName");
           Cookies.remove("accountUuid");
@@ -64,13 +64,6 @@ export default {
           this.$router.push("/login");
         });
       }
-    },
-  },
-  watch: {
-    "$route.path": function (val) {
-      if (val === "/home") {
-        this.toggleLeftMenu(false);
-      }  
     },
   },
   mounted() {
@@ -94,7 +87,7 @@ export default {
       if (currentPath !== "/login") {
         let lastPath = window.location.href;
         if (lastPath.indexOf("login") === -1) {
-          Cookies.set("lastLogoutPath", lastPath, { path: "/" });
+          Cookies.set("lastLogoutPath_CXP_WEB", lastPath, { path: "/" });
         }
         this.$router.replace("/login");
       }

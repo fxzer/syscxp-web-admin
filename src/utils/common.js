@@ -48,7 +48,7 @@ export function toLogin() {
   Cookies.remove("sessionid");
   Cookies.remove("searchAccount");
   if (currentPath !== loginPath) {
-    Cookies.set("lastLogoutPath", location.href, { path: "/" });
+    Cookies.set("lastLogoutPath_CXP_WEB", location.href, { path: "/" });
     window.location.href = loginPath;
   }
 }

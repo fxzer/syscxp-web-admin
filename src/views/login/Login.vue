@@ -230,7 +230,7 @@ export default {
               "accountName", this.nameString,
               { path: "/" }
             );
-        const lastPath = Cookies.get("lastLogoutPath") || process.env.BASE_URL;
+        const lastPath = Cookies.get("lastLogoutPath_CXP_WEB") || process.env.BASE_URL;
        this.setUserName(this.nameString);
         this.isMfaShow = false;
         location.href = lastPath;
@@ -267,7 +267,7 @@ export default {
               { path: "/" }
             );
             const lastPath =
-              Cookies.get("lastLogoutPath") || process.env.BASE_URL;
+              Cookies.get("lastLogoutPath_CXP_WEB") || process.env.BASE_URL;
            this.setUserName(this.nameString);
             location.href = lastPath;
           } else {
@@ -337,7 +337,7 @@ export default {
     padding-top: 30px;
     width: 380px;
     height: 410px;
-    background: url(../../assets/images/login.png) no-repeat left top;
+    background: url(../../assets/images/home.svg) no-repeat left top;
   }
   .login-form {
     max-width: 410px;
