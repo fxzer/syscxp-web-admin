@@ -4,7 +4,7 @@ export default [
     label: "首页",
     path: "/home",
     iconClass: "iconfont icon-home-fill",
-    pathExp: /home|swiperSlide|quickEntry/,
+    pathExp: /home|swiperSlide|quickAccess/,
     componentPath: "views/home/index.vue",
     subMenu: [
       {
@@ -14,10 +14,10 @@ export default [
         componentPath: "views/home/swiperSlide/index.vue",
       },
       {
-        name: "quickEntry",
+        name: "quickAccess",
         label: "快捷入口",
-        path: "/quickEntry",
-        componentPath: "views/home/quickEntry/index.vue",
+        path: "/quickAccess",
+        componentPath: "views/home/quickAccess/index.vue",
       },
     ]
   },
@@ -31,7 +31,7 @@ export default [
     subMenu: [
       {
         name: "introduction",
-        label: "公司简介",
+        label: "犀思简介",
         path: "/introduction",
         componentPath: "views/about/introduction/index.vue",
       },

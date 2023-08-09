@@ -10,7 +10,7 @@
         :header-cell-style="headerCellLayout" :cell-style="cellLayout">
         <el-table-column type="index" label="序号" width="100"></el-table-column>
         <el-table-column prop="path" label="图片"></el-table-column>
-        <el-table-column prop="name" label="标题"></el-table-column>
+        <el-table-column prop="title" label="标题"></el-table-column>
         <el-table-column prop="description" label="描述"></el-table-column>
         <el-table-column prop="createDate" label="更新时间" width="160px">
           <template slot-scope='{row}'>
@@ -28,6 +28,8 @@
         </el-table-column>
       </el-table>
     </div>
+    <AddAccess :visible.sync="addVisible" @done="addDone" />
+    <EditAccess :visible.sync="editVisible"  :currentRow="currentRow" @done="editDone"/>
   </div>
 </template>
 
@@ -41,6 +43,7 @@ export default {
   data() {
     return {
       dataList: [],
+      currentRow: {},
       wrapperLoading: false,
       gridLoading: false,
       addVisible: false,
@@ -50,10 +53,7 @@ export default {
   methods: {
     async queryList() {
       this.gridLoading = true
-      const result = await queryQuickAccess({
-        sortBy:'index',
-        sortDirection:'asc' 
-      })
+      const result = await queryQuickAccess({})
       this.dataList = result.success ? result.inventories : []
       console.log("[  this.dataList ]-46", this.dataList);
       this.gridLoading = false
@@ -84,7 +84,7 @@ export default {
     /* 修改 */
     openEdit(row) {
       this.currentRow = row
-      this.dialogVisible = true
+      this.editVisible = true
     },
     async editDone(formData){
       this.wrapperLoading = true;
@@ -124,6 +124,8 @@ export default {
     }
   },
   components: {
+    AddAccess: () => import('./components/AddAccess.vue'),
+    EditAccess: () => import('./components/EditAccess.vue'),
   },
   computed: {
     ...mapState([
@@ -132,7 +134,7 @@ export default {
     ]),
   },
   mounted() {
-    // this.queryList()
+    this.queryList()
   },
 };
 </script>

@@ -8,7 +8,7 @@ import ElementUI from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
 import "./main.scss";
 import { COPY } from "@/utils/directives";
-import { registerComponents, registerFilter } from "./utils/registerToVue";
+import {  registerFilter } from "./utils/registerToVue";
 Vue.use(ElementUI);
 Vue.directive("copy", COPY);
 Vue.use(vuescroll, {
@@ -19,7 +19,7 @@ Vue.use(vuescroll, {
     },
     name: "vuescroll",
 });
-registerComponents(Vue);
+// registerComponents(Vue);
 registerFilter(Vue);
 Vue.config.productionTip = false;
 

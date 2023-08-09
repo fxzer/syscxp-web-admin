@@ -1,6 +1,6 @@
 <template>
   <div>
-    quickEntry
+    quickAccess
   </div>
 </template>
 

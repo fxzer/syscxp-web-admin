@@ -29,6 +29,11 @@ module.exports = {
         ws: false,
         changeOrigin: true
       },
+      '/website/api': {
+        target: 'http://192.168.211.63:8130',
+        ws: false,
+        changeOrigin: true,
+      },
     }
   }
 }
