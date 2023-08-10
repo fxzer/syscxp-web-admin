@@ -87,3 +87,13 @@ export function duration(value) {
   }
   return t;
 }
+
+
+export function copyObject(obj,target,fields=[]){
+  if(fields || fields.length===0){
+    fields = Object.keys(obj)
+  }
+  fields.forEach(field=>{
+    target[field] = obj[field]
+  })
+} 

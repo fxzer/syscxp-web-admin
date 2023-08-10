@@ -10,7 +10,6 @@
         <el-table-column type="index" label="序号" width="100"></el-table-column>
         <el-table-column prop="img" label="图片"></el-table-column>
         <el-table-column prop="name" label="名称"></el-table-column>
-        <el-table-column prop="description" label="描述"></el-table-column>
         <el-table-column prop="createDate" label="更新时间" width="160px">
           <template slot-scope='{row}'>
             {{ row.createDate | date }}

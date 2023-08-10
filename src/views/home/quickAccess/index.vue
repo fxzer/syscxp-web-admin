@@ -9,7 +9,7 @@
       <el-table v-loading="gridLoading" :data="dataList" stripe class="width-percent-100"
         :header-cell-style="headerCellLayout" :cell-style="cellLayout">
         <el-table-column type="index" label="序号" width="100"></el-table-column>
-        <el-table-column prop="path" label="图片"></el-table-column>
+        <el-table-column prop="icon" label="图片"></el-table-column>
         <el-table-column prop="title" label="标题"></el-table-column>
         <el-table-column prop="description" label="描述"></el-table-column>
         <el-table-column prop="createDate" label="更新时间" width="160px">
@@ -121,7 +121,8 @@ export default {
           message: '删除失败!'
         });
       }
-    }
+    },
+    
   },
   components: {
     AddAccess: () => import('./components/AddAccess.vue'),
