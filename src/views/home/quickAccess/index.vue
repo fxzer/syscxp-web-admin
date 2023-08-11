@@ -9,16 +9,20 @@
       <el-table v-loading="gridLoading" :data="dataList" stripe class="width-percent-100"
         :header-cell-style="headerCellLayout" :cell-style="cellLayout">
         <el-table-column type="index" label="序号" width="100"></el-table-column>
-        <el-table-column prop="icon" label="图片"></el-table-column>
+        <el-table-column prop="icon" label="图片" width="100">
+          <template slot-scope='{row}'>
+             <img :src="row.icon"   class="icon" >  
+          </template>
+        </el-table-column>
         <el-table-column prop="title" label="标题"></el-table-column>
         <el-table-column prop="description" label="描述"></el-table-column>
-        <el-table-column prop="createDate" label="更新时间" width="160px">
+        <el-table-column prop="createDate" label="更新时间" width="160">
           <template slot-scope='{row}'>
             {{ row.createDate | date }}
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" width="320" fixed="right">
+        <el-table-column label="操作" width="200" fixed="right">
           <template slot-scope="{ row }">
             <el-button type="primary" size="mini" style="margin-right:6px;" @click="openEdit(row)">修改</el-button>
             <el-popconfirm title="确定删除吗？" @confirm="deleteHandler(row)">
@@ -139,4 +143,12 @@ export default {
   },
 };
 </script>
+
+<style scoped lang="scss">
+.icon{
+  width: 60px;height:60px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+</style>
 

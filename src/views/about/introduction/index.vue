@@ -1,14 +1,18 @@
 <template>
   <div class="wrapper">
-    <el-form :model="form" label-width="70px" :rules="formRules" ref="form">
+    <el-form :model="form" label-width="80px" :rules="formRules" ref="form">
       <el-form-item label="标题：" prop="title">
         <el-input v-if="isEdit" v-model="form.title" placeholder="请输入标题"></el-input>
         <h4 v-else>{{ form.title }}</h4>
       </el-form-item>
+      <el-form-item label="副标题：" prop="subTitle">
+        <el-input v-if="isEdit" v-model="form.subTitle" placeholder="请输入副标题"></el-input>
+        <h4 v-else>{{ form.subTitle }}</h4>
+      </el-form-item>
       <el-form-item label="描述：" prop="desc">
         <template  v-if="isEdit" >
-          <div v-for="(desc,index) in form.desc" :key="index" style="display: flex;justify-content: start;align-items: center;">
-            <el-input type="textarea" style="margin-bottom:10px;" v-model="form.desc[index]"  :autosize="{ minRows: 3, maxRows: 5 }"
+          <div v-for="(desc,index) in descList" :key="index" style="display: flex;justify-content: start;align-items: center;">
+            <el-input type="textarea" style="margin-bottom:10px;" v-model="descList[index]"  :autosize="{ minRows: 3, maxRows: 5 }"
             placeholder="请输入描述"></el-input>
              <el-button type="primary" size="mini" @click="addDesc" icon="el-icon-plus" style="margin-left: 10px;" v-if="index===0"> </el-button>
              <el-button type="danger" size="mini" @click="removeDesc(index)" icon="el-icon-minus" style="margin-left: 10px;" v-else> </el-button>
@@ -17,7 +21,7 @@
         </template>
        
           <template v-else>
-            <p v-for="(desc,index) in form.desc" :key="index" class="desc">{{  desc }}</p>
+            <p v-for="(desc,index) in descList" :key="index" class="desc">{{  desc }}</p>
         </template>
       </el-form-item>
       <el-form-item>
@@ -30,6 +34,8 @@
 </template>
 
 <script>
+import { queryIntro,updateIntro} from "@/api/intro";
+import { copyObject } from '@/utils/common'
 export default {
   props: {
   },
@@ -38,18 +44,25 @@ export default {
       isEdit: false,
       loading: false,
       form: {
-        title: '犀思云是国内NaaS（网络即服务）服务提供商',
-        desc: [
-        '1犀思云成立于2012年，是国内NaaS（网络即服务）服务提供商，深耕SDN/NFV（软件定义网络/网络虚拟化）技术10年之久，致力于通过基于SDN技术构建的融合网络平台，面向用户提供混合多云连接、企业总分支组网、应用访问加速、边缘网络加速等L2至L7层网络服务和解决方案。犀思云资源覆盖全球，边缘云POP节点100+，云节点200+',
-        '2犀思云成立于2012年，是国内NaaS（网络即服务）服务提供商，深耕SDN/NFV（软件定义网络/网络虚拟化）技术10年之久，致力于通过基于SDN技术构建的融合网络平台，面向用户提供混合多云连接、企业总分支组网、应用访问加速、边缘网络加速等L2至L7层网络服务和解决方案。犀思云资源覆盖全球，边缘云POP节点100+，云节点200+1',
-        '3犀思云成立于2012年，是国内NaaS（网络即服务）服务提供商，深耕SDN/NFV（软件定义网络/网络虚拟化）技术10年之久，致力于通过基于SDN技术构建的融合网络平台，面向用户提供混合多云连接、企业总分支组网、应用访问加速、边缘网络加速等L2至L7层网络服务和解决方案。犀思云资源覆盖全球，边缘云POP节点100+，云节点200+2',
-
-        ]
+        title: '',
+        subTitle: '',
+        description:''
       },
+      descList:[],
       formRules: {
         title: [{ required: true, message: '请输入标题', trigger: 'blur' },],
-        desc: [{ required: true, message: '请输入描述', trigger: 'blur' },],
+        subTitle: [{ required: true, message: '请输入副标题', trigger: 'blur' },],
+        // description: [{ required: false, message: '请输入描述', trigger: 'blur' },],
       },
+    }
+  },
+  watch:{
+    descList:{
+      handler(val){
+        this.form.description = JSON.stringify(val).replace('"','\\"');
+      },
+      deep:true,
+      immediate:true
     }
   },
   methods: {
@@ -58,27 +71,36 @@ export default {
     },
     async handleSave(){
       this.loading = true;
-      // const result = await updateQuickAccess(formData);
-      // this.loading = false;
-      // if (result.success) {
-      //   this.$notify({
-      //     type: "success",
-      //     message: `修改成功`,
-      //   });
-      //  his.isEdit = false;
-      // } else {
-      //   this.$notify({
-      //     type: "error",
-      //     message: `修改失败`,
-      //   });
-      // }
+      const result = await updateIntro(this.form);
+      this.loading = false;
+      if (result.success) {
+        this.$notify({
+          type: "success",
+          message: `修改成功`,
+        });
+       this.isEdit = false;
+      } else {
+        this.$notify({
+          type: "error",
+          message: `修改失败`,
+        });
+      }
     },
     addDesc(){
-      this.form.desc.push('');
+      this.descList.push('');
     },
     removeDesc(index){
-      this.form.desc.splice(index,1);
+      this.descList.splice(index,1);
+    },
+    async queryIntro(){
+      const result = await queryIntro();
+      const data  = result.success ? result.inventories[0] : {}
+      copyObject(data,this.form);
+      this.descList = JSON.parse(data.description.replace('\\"','"') || '[]');
     }
+  },
+  created() {
+    this.queryIntro();
   },
 };
 </script>
@@ -86,7 +108,7 @@ export default {
 <style scoped lang="scss">
 .wrapper {
   background-color: #fff;
-  padding: 20px;
+  padding:  40px;
 }
 
 .desc{

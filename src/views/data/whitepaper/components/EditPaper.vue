@@ -53,8 +53,6 @@ export default {
   data() {
     return {
       title: '修改快捷入口',
-      errorMsg: '',
-      originSrc: '',
       form: {
         icon: '',
         link: '',
@@ -140,24 +138,28 @@ export default {
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  &:hover {
+    border-color: #409EFF;
+  }
 }
 
-.avatar-uploader .el-upload:hover {
-  border-color: #409EFF;
-}
+.avatar-uploader ::v-deep .el-upload .el-upload-dragger {
+  width: 100px;
+  height: 100px;
+  .el-icon-plus {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    color: #8c939d;
+    width: 100%;
+    height: 100%;
+  }
 
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 90px;
-  height: 90px;
-  line-height: 90px;
-  text-align: center;
-}
-
-.avatar {
-  width: 90px;
-  height: 90px;
-  display: block;
+  .avatar {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
 }
 </style>

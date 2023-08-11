@@ -135,24 +135,5 @@ export default {
   flex: 1 0 0;
   overflow: auto;
 }
-// .is-overflow {
-//   background-color: #00182e;
-//   .sdwan-main {
-//     padding: 0 !important;
-//     margin-left: -1px;
-//     width: 100%;
-//     height: 72px;
-//     box-sizing: border-box;
-//     padding-top: 16px;
-//     overflow-x: scroll; /* 设置溢出滚动 */
-//     white-space: nowrap;
-//     overflow-y: hidden;
-//     /* 隐藏滚动条 */
-//     scrollbar-width: none; /* firefox */
-//     -ms-overflow-style: none; /* IE 10+ */
-//     &::-webkit-scrollbar {
-//       display: none; /* Chrome Safari */
-//     }
-//   }
-// }
+
 </style>

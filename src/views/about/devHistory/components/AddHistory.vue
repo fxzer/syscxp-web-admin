@@ -42,8 +42,6 @@ export default {
     return {
       loading: false,
       title: '新增企业发展史',
-      errorMsg: '',
-      originSrc: '',
       form: {
         year: '',
         events: [

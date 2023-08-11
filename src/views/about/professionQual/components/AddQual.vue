@@ -1,30 +1,27 @@
 <template>
-  <el-dialog :close-on-click-modal="false" :title="title" :visible="visible" width="550px" @close="close">
+  <el-dialog :close-on-click-modal="false" :title="title" :visible="visible" width="500px" @close="close">
 
     <el-form :model="form" label-width="60px" :rules="formRules" ref="form">
-      <el-form-item label="封面" prop="cover">
-        <el-upload class="avatar-uploader" action="/website/api/uploadfile" :data="{
-          fileType: 'access'
+      <el-form-item label="分类" prop="name">
+        <el-radio-group v-model="form.type" size="medium">
+          <el-radio-button label="权威资质">权威资质</el-radio-button>
+          <el-radio-button label="荣誉资质">荣誉资质</el-radio-button>
+        </el-radio-group>
+
+      </el-form-item>
+      <el-form-item label="图片" prop="icon">
+        <el-upload class="avatar-uploader" action="/website/api/uploadfile" drag :data="{
+          fileType: 'qualification'
         }" :show-file-list="false" :on-success="handleUploadSuccess" :before-upload="handleBeforeUpload">
           <img v-if="imageUrl" :src="imageUrl" class="avatar">
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
       </el-form-item>
 
-      <el-form-item label="标题" prop="title">
-        <el-input v-model="form.title" placeholder="请输入标题"></el-input>
+      <el-form-item label="名称" prop="name">
+        <el-input v-model="form.name" placeholder="请输入名称"></el-input>
       </el-form-item>
 
-      <el-form-item label="描述" prop="desc">
-        <el-input type="textarea" v-model="form.desc" show-word-limit maxlength="50"
-          placeholder="请输入描述"></el-input>
-      </el-form-item>
-      <el-form-item label="文件" prop="link">
-        <el-upload style="width: 100%;"   drag action="https://jsonplaceholder.typicode.com/posts/"  :on-success="handleUploadSuccessFile" :fileList="fileList"  :before-upload="handleBeforeUploadFile">
-          <i class="el-icon-upload"></i>
-          <div class="el-upload__text">将文件拖到此处，或<em>点击上传，</em>只能上传【PDF】格式文件!</div>
-        </el-upload>
-      </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button size="medium" @click="close">取 消</el-button>
@@ -44,25 +41,19 @@ export default {
   data() {
     return {
       loading: false,
-      title: '新增白皮书',
+      title: '新增快捷入口',
       form: {
-        icon: '',
-        link: '',
-        title: '',
-        description: '',
+        type: '权威资质',
+        imgSrc: '',
+        name: '',
       },
       imageUrl: '',
       formRules: {
-        icon: [{ required: true, message: '请上传图标', trigger: 'blur' },],
-        link: [{ required: true, message: '请选择跳转链接', trigger: 'blur' },],
-        title: [{ required: true, message: '请输入标题', trigger: 'blur' },],
-        description: [{ required: true, message: '请输入描述', trigger: 'blur' },],
+        type: [{ required: true, message: '请选择分类', trigger: 'blur' },],
+        name: [{ required: true, message: '请输入名称', trigger: 'blur' },],
+        imgSrc: [{ required: true, message: '请上传图片', trigger: 'blur' },],
       },
       linkGroup: [],
-      fileList: [ {
-        name: 'food.jpeg',
-        url: 'https://jsonplaceholder.typicode.com/posts/',
-      }]
     }
   },
   methods: {
@@ -77,12 +68,11 @@ export default {
         }
       });
     },
-      // 上传图片
+    // 上传图片
     handleUploadSuccess(_, file) {
       this.imageUrl = URL.createObjectURL(file.raw);
-      this.form.icon = 'access-' + file.name
+      this.form.imgSrc = 'qualification/' + file.name
     },
-  
     handleBeforeUpload(file) {
       const isEnableType = ['image/jpeg', 'image/png', 'image/jpg', 'image/svg+xml'].includes(file.type);
       const isLt2M = file.size / 1024 / 1024 < 2;
@@ -95,25 +85,8 @@ export default {
       return isLt2M;
     },
 
-      // 上传文件
-      handleUploadSuccessFile(_, file) {
-      const fileObj = {
-        name: file.name,
-        url: URL.createObjectURL(file.raw),
-      }
-       this.fileList.push(fileObj);
-    },
-    handleBeforeUploadFile(file) {
-      //上传 pdf
-      const isEnableType = ['application/pdf'].includes(file.type);
-      if (!isEnableType) {
-        this.$message.error('上传文件只能是 【 PDF 】格式!');
-      }
-    },
-
   },
   computed: {
-
   },
   watch: {
     visible(val) {
@@ -143,8 +116,8 @@ export default {
 }
 
 .avatar-uploader ::v-deep .el-upload .el-upload-dragger {
-  width: 100px;
-  height: 100px;
+  width: 150px;
+  height: 200px;
   .el-icon-plus {
     display: flex;
     align-items: center;

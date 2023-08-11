@@ -46,8 +46,6 @@ export default {
     return {
       loading: false,
       title: '修改企业发展史',
-      errorMsg: '',
-      originSrc: '',
       form: {
         year: '',
         events: [

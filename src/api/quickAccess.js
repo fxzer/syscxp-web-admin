@@ -1,8 +1,8 @@
 import { requestWrapper } from './util';
 const apiUrl = {
   baseUrl: '/website/api',
-  create: 'com.syscxp.header.website.access.APICreateQuickAccessMsg',
   query: 'com.syscxp.header.website.access.APIQueryQuickAccessMsg',
+  create: 'com.syscxp.header.website.access.APICreateQuickAccessMsg',
   querySolution:'com.syscxp.header.website.solution.APIQuerySolutionMsg',
   delete: 'com.syscxp.header.website.access.APIDeleteQuickAccessMsg',
   update: 'com.syscxp.header.website.access.APIUpdateQuickAccessMsg',

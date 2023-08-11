@@ -1,65 +1,60 @@
 <template>
   <el-dialog :close-on-click-modal="false" :title="title" :visible="visible" width="500px" @close="close">
-
     <el-form :model="form" label-width="60px" :rules="formRules" ref="form">
+      <el-form-item label="分类" prop="name">
+        <el-radio-group v-model="form.type" size="medium">
+          <el-radio-button label="权威资质">权威资质</el-radio-button>
+          <el-radio-button label="荣誉资质">荣誉资质</el-radio-button>
+        </el-radio-group>
+
+      </el-form-item>
       <el-form-item label="图片" prop="icon">
-        <el-upload class="avatar-uploader" action="/website/api/uploadfile"  drag :data="{
-          fileType: 'access'
+        <el-upload class="avatar-uploader" action="/website/api/uploadfile" drag :data="{
+          fileType: 'qualification'
         }" :show-file-list="false" :on-success="handleUploadSuccess" :before-upload="handleBeforeUpload">
           <img v-if="imageUrl" :src="imageUrl" class="avatar">
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
       </el-form-item>
 
-      <el-form-item label="标题" prop="title">
-        <el-input v-model="form.title" placeholder="请输入标题"></el-input>
-      </el-form-item>
-      <el-form-item label="链接" prop="link">
-        <el-select v-model="form.link" style="width: 100%;" placeholder="请选择跳转链接">
-          <el-option-group v-for=" key  in linkGroupKeys" :key="key" :label="key">
-             <el-option v-for="link in linkGroup[key]" :key="link.uuid" :label="link.title" :value="link.path">
-          </el-option>
-          </el-option-group>
-        </el-select>
-
-      </el-form-item>
-      <el-form-item label="描述" prop="description">
-        <el-input type="textarea" v-model="form.description" show-word-limit maxlength="50" placeholder="请输入描述"></el-input>
+      <el-form-item label="名称" prop="name">
+        <el-input v-model="form.name" placeholder="请输入名称"></el-input>
       </el-form-item>
 
     </el-form>
     <span slot="footer" class="dialog-footer">
-      <el-button size="medium" @click="close">取 消</el-button>
-      <el-button size="medium" type="primary" @click="confirm">确 定</el-button>
+      <el-button size="small" @click="close">取 消</el-button>
+      <el-button size="small" type="primary" @click="confirm">确 定</el-button>
     </span>
   </el-dialog>
 </template>
 
 <script>
-import { querySolution } from "@/api/quickAccess";
+import { copyObject } from '@/utils/common'
 export default {
   props: {
     visible: {
       type: Boolean,
       default: false,
     },
+    currentRow:{
+      type:Object,
+      default:()=>({})
+    }
   },
   data() {
     return {
-      loading: false,
-      title: '新增快捷入口',
+      title: '修改快捷入口',
       form: {
-        icon: '',
-        link: '',
-        title: '',
-        description: '',
+        type: '权威资质',
+        imgSrc: '',
+        name: '',
       },
       imageUrl: '',
       formRules: {
-        icon: [{ required: true, message: '请上传图标', trigger: 'blur' },],
-        link: [{ required: true, message: '请选择跳转链接', trigger: 'blur' },],
-        title: [{ required: true, message: '请输入标题', trigger: 'blur' },],
-        description: [{ required: true, message: '请输入描述', trigger: 'blur' },],
+        type: [{ required: true, message: '请选择分类', trigger: 'blur' },],
+        name: [{ required: true, message: '请输入名称', trigger: 'blur' },],
+        imgSrc: [{ required: true, message: '请上传图片', trigger: 'blur' },],
       },
       linkGroup: [],
     }
@@ -72,6 +67,8 @@ export default {
     confirm() {
       this.$refs.form.validate(valid => {
         if (valid) {
+          const { imgSrc } = this.form
+          this.form.imgSrc =  imgSrc.startsWith('http')  ? imgSrc.split('imgs/')[1] : imgSrc
           this.$emit('done', this.form);
         }
       });
@@ -79,10 +76,10 @@ export default {
     // 上传图片
     handleUploadSuccess(_, file) {
       this.imageUrl = URL.createObjectURL(file.raw);
-      this.form.icon = 'access/' + file.name
+      this.form.imgSrc = 'qualification/' + file.name
     },
     handleBeforeUpload(file) {
-      const isEnableType = ['image/jpeg', 'image/png', 'image/jpg', 'image/svg+xml'].includes(file.type);
+      const isEnableType  = ['image/jpeg', 'image/png', 'image/jpg', 'image/svg+xml'].includes(file.type);
       const isLt2M = file.size / 1024 / 1024 < 2;
       if (!isEnableType) {
         this.$message.error('上传图片只能是 【JPG、JPEG、PNG、SVG】格式!');
@@ -92,29 +89,15 @@ export default {
       }
       return isLt2M;
     },
-    async querySolution() {
-      const result = await querySolution({
-        limit:20,
-      })
-      this.linkGroup = result.success ? result.inventories.reduce((group,cur) =>{
-        group[cur.category] = group[cur.category] ? [...group[cur.category],cur] : [cur]
-        return group
-      },{}) : []
-    },
-
-  },
-  computed: {
-    linkGroupKeys(){
-      return Object.keys(this.linkGroup).reverse()
-    }
   },
   watch: {
-    visible(val) {
+     visible(val) {
       if (val) {
-        this.$nextTick(async () => {
+        this.$nextTick( () => {
           this.$refs.form.resetFields();
           this.$refs.form.clearValidate();
-          await this.querySolution()
+          this.imageUrl = this.currentRow.imgSrc
+         copyObject(this.currentRow,this.form )
         });
       }else{
         this.imageUrl = ''
@@ -137,8 +120,8 @@ export default {
 }
 
 .avatar-uploader ::v-deep .el-upload .el-upload-dragger {
-  width: 100px;
-  height: 100px;
+  width: 150px;
+  height: 200px;
   .el-icon-plus {
     display: flex;
     align-items: center;

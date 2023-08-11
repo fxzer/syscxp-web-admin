@@ -8,8 +8,13 @@
       <el-table v-loading="gridLoading" :data="dataList" stripe class="width-percent-100"
         :header-cell-style="headerCellLayout" :cell-style="cellLayout">
         <el-table-column type="index" label="序号" width="100"></el-table-column>
-        <el-table-column prop="img" label="图片"></el-table-column>
+        <el-table-column prop="imgSrc" label="图片">
+          <template slot-scope='{row}'>
+           <img :src="row.imgSrc" class="cover"  >
+          </template>
+        </el-table-column>
         <el-table-column prop="name" label="名称"></el-table-column>
+        <el-table-column prop="type" label="分类"></el-table-column>
         <el-table-column prop="createDate" label="更新时间" width="160px">
           <template slot-scope='{row}'>
             {{ row.createDate | date }}
@@ -26,12 +31,14 @@
         </el-table-column>
       </el-table>
     </div>
+    <AddQual :visible.sync="addVisible" @done="addDone" />
+    <EditQual :visible.sync="editVisible"  :currentRow="currentRow" @done="editDone"/>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
-import { queryQuickAccess, deleteQuickAccess,createQuickAccess ,updateQuickAccess} from "@/api/quickAccess";
+import { queryQualification, deleteQualification,createQualification ,updateQualification} from "@/api/qualification";
 export default {
   props: {
 
@@ -49,9 +56,8 @@ export default {
   methods: {
     async queryList() {
       this.gridLoading = true
-      const result = await queryQuickAccess({})
+      const result = await queryQualification({})
       this.dataList = result.success ? result.inventories : []
-      console.log("[  this.dataList ]-46", this.dataList);
       this.gridLoading = false
     },
     /* 新增 */
@@ -61,7 +67,7 @@ export default {
     },
     async addDone(formData){
       this.wrapperLoading = true;
-      const result = await createQuickAccess(formData);
+      const result = await createQualification(formData);
       this.wrapperLoading = false;
       if (result.success) {
         this.$notify({
@@ -84,7 +90,7 @@ export default {
     },
     async editDone(formData){
       this.wrapperLoading = true;
-      const result = await updateQuickAccess(formData);
+      const result = await updateQualification(formData);
       this.wrapperLoading = false;
       if (result.success) {
         this.$notify({
@@ -103,7 +109,7 @@ export default {
     /* 删除 */
     async deleteHandler(row) {
       this.wrapperLoading = true
-      const result = await deleteQuickAccess(row.uuid)
+      const result = await deleteQualification(row.uuid)
       this.wrapperLoading = false
       if (result.success) {
         this.$notify({
@@ -120,6 +126,8 @@ export default {
     }
   },
   components: {
+    AddQual: () => import('./components/AddQual.vue'),
+    EditQual: () => import('./components/EditQual.vue'),
   },
   computed: {
     ...mapState([
@@ -132,4 +140,13 @@ export default {
   },
 };
 </script>
+
+<style>
+.cover{
+  width: 70px;
+  height: 100px;
+  border-radius: 4px;
+  border:1px solid #ddd;
+}
+</style>
 

@@ -5,7 +5,7 @@
         <el-upload class="avatar-uploader" action="/website/api/uploadfile" :data="{
           fileType:'access'
         }" :show-file-list="false"
-          :on-success="handleUploadSuccess" :on-remove="handleUploadRemove" :before-upload="handleBeforeUpload">
+          :on-success="handleUploadSuccess"  :before-upload="handleBeforeUpload">
           <img v-if="imageUrl" :src="imageUrl" class="avatar">
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
@@ -53,8 +53,6 @@ export default {
   data() {
     return {
       title: '修改快捷入口',
-      errorMsg: '',
-      originSrc: '',
       form: {
         icon: '',
         link: '',
@@ -79,6 +77,9 @@ export default {
     confirm() {
       this.$refs.form.validate(valid => {
         if (valid) {
+          //判断 icon 属性 可能是'http://192.168.211.63:8130/imgs/access/xxx.png' 或者 'access/xxx.png',传给后端的是后者
+          const { icon } = this.form
+          this.form.icon =  icon.startsWith('http')  ? icon.split('imgs/')[1] : icon
           this.$emit('done', this.form);
         }
       });
@@ -86,7 +87,7 @@ export default {
     // 上传图片
     handleUploadSuccess(_, file) {
       this.imageUrl = URL.createObjectURL(file.raw);
-      this.form.icon = 'access' + file.name
+      this.form.icon = 'access/' + file.name
     },
     handleBeforeUpload(file) {
       const isEnableType  = ['image/jpeg', 'image/png', 'image/jpg', 'image/svg+xml'].includes(file.type);
@@ -98,9 +99,6 @@ export default {
         this.$message.error('上传图片大小不能超过 2MB!');
       }
       return isLt2M;
-    },
-    handleUploadRemove(file, fileList){
-        console.log(file, fileList);
     },
     async querySolution() {
       const result = await querySolution({
@@ -124,7 +122,7 @@ export default {
           this.querySolution()
           this.$refs.form.resetFields();
           this.$refs.form.clearValidate();
-          this.imageUrl = 'http://192.168.211.63:8130/website/api/' + this.currentRow.icon
+          this.imageUrl = this.currentRow.icon
          copyObject(this.currentRow,this.form )
         });
       }
@@ -140,24 +138,28 @@ export default {
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  &:hover {
+    border-color: #409EFF;
+  }
 }
 
-.avatar-uploader .el-upload:hover {
-  border-color: #409EFF;
-}
+.avatar-uploader ::v-deep .el-upload .el-upload-dragger {
+  width: 100px;
+  height: 100px;
+  .el-icon-plus {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    color: #8c939d;
+    width: 100%;
+    height: 100%;
+  }
 
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 90px;
-  height: 90px;
-  line-height: 90px;
-  text-align: center;
-}
-
-.avatar {
-  width: 90px;
-  height: 90px;
-  display: block;
+  .avatar {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
 }
 </style>
