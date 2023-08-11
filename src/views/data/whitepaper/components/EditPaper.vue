@@ -1,11 +1,10 @@
 <template>
-  <el-dialog :close-on-click-modal="false" :title="title" :visible="visible" width="500px" @close="close">
+  <el-dialog :close-on-click-modal="false" :title="title" :visible="visible" width="550px" top="60px" @close="close">
     <el-form :model="form" label-width="60px" :rules="formRules" ref="form">
-      <el-form-item label="图片" prop="icon">
-        <el-upload class="avatar-uploader" action="/website/api/uploadfile" :data="{
-          fileType:'access'
-        }" :show-file-list="false"
-          :on-success="handleUploadSuccess" :on-remove="handleUploadRemove" :before-upload="handleBeforeUpload">
+      <el-form-item label="封面" prop="cover">
+        <el-upload class="cover" action="/website/api/uploadfile" :data="{
+          fileType: 'paper'
+        }" :show-file-list="false" :on-success="handleUploadSuccess" :before-upload="handleBeforeUpload">
           <img v-if="imageUrl" :src="imageUrl" class="avatar">
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
@@ -14,30 +13,26 @@
       <el-form-item label="标题" prop="title">
         <el-input v-model="form.title" placeholder="请输入标题"></el-input>
       </el-form-item>
-      <el-form-item label="链接" prop="link">
-        <el-select v-model="form.link" style="width: 100%;" placeholder="请选择跳转链接">
-          <el-option-group v-for=" key  in linkGroupKeys" :key="key" :label="key">
-             <el-option v-for="link in linkGroup[key]" :key="link.uuid" :label="link.title" :value="link.path">
-          </el-option>
-          </el-option-group>
-        </el-select>
 
+      <el-form-item label="描述" prop="desc">
+        <el-input type="textarea" v-model="form.desc" show-word-limit maxlength="50" placeholder="请输入描述"></el-input>
       </el-form-item>
-      <el-form-item label="描述" prop="description">
-        <el-input type="textarea" v-model="form.description" show-word-limit maxlength="50"
-          placeholder="请输入描述"></el-input>
+      <el-form-item label="文件" prop="fileLink">
+        <el-upload class="file-upload" drag action="https://jsonplaceholder.typicode.com/posts/"
+          :on-success="handleUploadSuccessFile" :fileList="fileList" :before-upload="handleBeforeUploadFile">
+          <i class="el-icon-upload"></i>
+          <div class="el-upload__text">将文件拖到此处，或<em>点击上传，</em>只能上传【PDF】格式文件!</div>
+        </el-upload>
       </el-form-item>
-
     </el-form>
     <span slot="footer" class="dialog-footer">
-      <el-button size="small" @click="close">取 消</el-button>
-      <el-button size="small" type="primary" @click="confirm">确 定</el-button>
+      <el-button size="medium" @click="close">取 消</el-button>
+      <el-button size="medium" type="primary" @click="confirm">确 定</el-button>
     </span>
   </el-dialog>
 </template>
 
 <script>
-import { querySolution } from "@/api/quickAccess";
 import { copyObject } from '@/utils/common'
 export default {
   props: {
@@ -52,21 +47,20 @@ export default {
   },
   data() {
     return {
-      title: '修改快捷入口',
+      title: '修改白皮书',
       form: {
-        icon: '',
-        link: '',
+        cover: '',
         title: '',
+        link: '',
         description: '',
       },
       imageUrl: '',
       formRules: {
-        icon: [{ required: true, message: '请上传图标', trigger: 'blur' },],
-        link: [{ required: true, message: '请选择跳转链接', trigger: 'blur' },],
+        cover: [{ required: true, message: '请上传图片', trigger: 'blur' },],
+        fileLink: [{ required: true, message: '请上传文件', trigger: 'blur' },],
         title: [{ required: true, message: '请输入标题', trigger: 'blur' },],
         description: [{ required: true, message: '请输入描述', trigger: 'blur' },],
       },
-      linkGroup: [],
     }
   },
   methods: {
@@ -77,6 +71,8 @@ export default {
     confirm() {
       this.$refs.form.validate(valid => {
         if (valid) {
+          const { cover } = this.form
+          this.form.cover =  cover.startsWith('http')  ? cover.split('imgs/')[1] : cover
           this.$emit('done', this.form);
         }
       });
@@ -84,7 +80,7 @@ export default {
     // 上传图片
     handleUploadSuccess(_, file) {
       this.imageUrl = URL.createObjectURL(file.raw);
-      this.form.icon = 'access' + file.name
+      this.form.cover = 'paper/' + file.name
     },
     handleBeforeUpload(file) {
       const isEnableType  = ['image/jpeg', 'image/png', 'image/jpg', 'image/svg+xml'].includes(file.type);
@@ -97,32 +93,18 @@ export default {
       }
       return isLt2M;
     },
-    handleUploadRemove(file, fileList){
-        console.log(file, fileList);
-    },
-    async querySolution() {
-      const result = await querySolution({
-        limit:20,
-      })
-      this.linkGroup = result.success ? result.inventories.reduce((group,cur) =>{
-        group[cur.category] = group[cur.category] ? [...group[cur.category],cur] : [cur]
-        return group
-      },{}) : []
-    },
-  },
-  computed: {
-    linkGroupKeys(){
-      return Object.keys(this.linkGroup).reverse()
-    }
   },
   watch: {
      visible(val) {
       if (val) {
         this.$nextTick( () => {
-          this.querySolution()
           this.$refs.form.resetFields();
           this.$refs.form.clearValidate();
-          this.imageUrl = 'http://192.168.211.63:8130/website/api/' + this.currentRow.icon
+          this.imageUrl = this.currentRow.cover;
+          this.fileList = this.currentRow.fileLink ? [{
+            name: this.currentRow.fileLink.split('/').pop(),
+            url: this.currentRow.fileLink,
+          }] : [];
          copyObject(this.currentRow,this.form )
         });
       }

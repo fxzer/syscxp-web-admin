@@ -9,10 +9,10 @@
       <el-table v-loading="gridLoading" :data="dataList" stripe class="width-percent-100"
         :header-cell-style="headerCellLayout" :cell-style="cellLayout">
         <el-table-column type="index" label="序号" width="100"></el-table-column>
-        <el-table-column prop="icon" label="图片"></el-table-column>
+        <el-table-column prop="cover" label="图片"></el-table-column>
         <el-table-column prop="title" label="标题"></el-table-column>
         <el-table-column prop="description" label="描述"></el-table-column>
-        <el-table-column prop="link" label="下载链接"></el-table-column>
+        <el-table-column prop="fileLink" label="下载链接"></el-table-column>
         <el-table-column prop="createDate" label="更新时间" width="160px">
           <template slot-scope='{row}'>
             {{ row.createDate | date }}
@@ -30,7 +30,7 @@
       </el-table>
     </div>
    <AddPaper :visible.sync="addVisible" @done="addDone" />
-    <!--  <EditAccess :visible.sync="editVisible"  :currentRow="currentRow" @done="editDone"/> -->
+     <EditPaper :visible.sync="editVisible"  :currentRow="currentRow" @done="editDone"/>
   </div>
 </template>
 
@@ -127,7 +127,7 @@ export default {
   },
   components: {
     AddPaper: () => import('./components/AddPaper.vue'),
-    // EditAccess: () => import('./components/EditAccess.vue'),
+    EditPaper: () => import('./components/EditPaper.vue'),
   },
   computed: {
     ...mapState([

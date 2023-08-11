@@ -1,10 +1,9 @@
 <template>
-  <el-dialog :close-on-click-modal="false" :title="title" :visible="visible" width="550px" @close="close">
-
+  <el-dialog :close-on-click-modal="false" :title="title" :visible="visible" width="550px" top="60px" @close="close">
     <el-form :model="form" label-width="60px" :rules="formRules" ref="form">
       <el-form-item label="封面" prop="cover">
-        <el-upload class="avatar-uploader" action="/website/api/uploadfile" :data="{
-          fileType: 'access'
+        <el-upload class="cover" action="/website/api/uploadfile" :data="{
+          fileType: 'paper'
         }" :show-file-list="false" :on-success="handleUploadSuccess" :before-upload="handleBeforeUpload">
           <img v-if="imageUrl" :src="imageUrl" class="avatar">
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -16,11 +15,11 @@
       </el-form-item>
 
       <el-form-item label="描述" prop="desc">
-        <el-input type="textarea" v-model="form.desc" show-word-limit maxlength="50"
-          placeholder="请输入描述"></el-input>
+        <el-input type="textarea" v-model="form.desc" show-word-limit maxlength="50" placeholder="请输入描述"></el-input>
       </el-form-item>
-      <el-form-item label="文件" prop="link">
-        <el-upload style="width: 100%;"   drag action="https://jsonplaceholder.typicode.com/posts/"  :on-success="handleUploadSuccessFile" :fileList="fileList"  :before-upload="handleBeforeUploadFile">
+      <el-form-item label="文件" prop="fileLink">
+        <el-upload class="file-upload" drag action="https://jsonplaceholder.typicode.com/posts/"
+          :on-success="handleUploadSuccessFile" :fileList="fileList" :before-upload="handleBeforeUploadFile">
           <i class="el-icon-upload"></i>
           <div class="el-upload__text">将文件拖到此处，或<em>点击上传，</em>只能上传【PDF】格式文件!</div>
         </el-upload>
@@ -46,20 +45,19 @@ export default {
       loading: false,
       title: '新增白皮书',
       form: {
-        icon: '',
-        link: '',
+        cover: '',
         title: '',
+        link: '',
         description: '',
       },
       imageUrl: '',
       formRules: {
-        icon: [{ required: true, message: '请上传图标', trigger: 'blur' },],
-        link: [{ required: true, message: '请选择跳转链接', trigger: 'blur' },],
+        cover: [{ required: true, message: '请上传图片', trigger: 'blur' },],
+        fileLink: [{ required: true, message: '请上传文件', trigger: 'blur' },],
         title: [{ required: true, message: '请输入标题', trigger: 'blur' },],
         description: [{ required: true, message: '请输入描述', trigger: 'blur' },],
       },
-      linkGroup: [],
-      fileList: [ {
+      fileList: [{
         name: 'food.jpeg',
         url: 'https://jsonplaceholder.typicode.com/posts/',
       }]
@@ -77,12 +75,12 @@ export default {
         }
       });
     },
-      // 上传图片
+    // 上传图片
     handleUploadSuccess(_, file) {
       this.imageUrl = URL.createObjectURL(file.raw);
-      this.form.icon = 'access-' + file.name
+      this.form.icon = 'paper/' + file.name
     },
-  
+
     handleBeforeUpload(file) {
       const isEnableType = ['image/jpeg', 'image/png', 'image/jpg', 'image/svg+xml'].includes(file.type);
       const isLt2M = file.size / 1024 / 1024 < 2;
@@ -94,14 +92,14 @@ export default {
       }
       return isLt2M;
     },
-
-      // 上传文件
-      handleUploadSuccessFile(_, file) {
+    // 上传文件
+    handleUploadSuccessFile(_, file) {
+      this.form.fileLink = 'paper/' + file.name
       const fileObj = {
         name: file.name,
         url: URL.createObjectURL(file.raw),
       }
-       this.fileList.push(fileObj);
+      this.fileList.push(fileObj);
     },
     handleBeforeUploadFile(file) {
       //上传 pdf
@@ -131,34 +129,53 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.avatar-uploader ::v-deep .el-upload {
+.cover ::v-deep .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;
   cursor: pointer;
   position: relative;
   overflow: hidden;
+
   &:hover {
     border-color: #409EFF;
   }
+
+  width: 150px;
+  height: 200px;
 }
 
-.avatar-uploader ::v-deep .el-upload .el-upload-dragger {
-  width: 100px;
-  height: 100px;
-  .el-icon-plus {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 30px;
-    color: #8c939d;
-    width: 100%;
-    height: 100%;
+.file-upload ::v-deep .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    border-color: #409EFF;
   }
 
-  .avatar {
-    width: 100%;
-    height: 100%;
-    display: block;
-  }
+  width: 450px;
+  height: 200px;
 }
-</style>
+
+::v-deep .el-upload .el-upload-dragger {
+  width: 100%;
+  height: 100%;
+}
+
+.el-icon-plus {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  color: #8c939d;
+  width: 100%;
+  height: 100%;
+}
+
+.avatar {
+  width: 100%;
+  height: 100%;
+  display: block;
+}</style>
