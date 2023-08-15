@@ -3,20 +3,15 @@
 
     <el-form :model="form" label-width="60px" :rules="formRules" ref="form">
 
-      <el-form-item label="年份" prop="title">
-        <el-date-picker v-model="form.year" type="year" placeholder="选择年" style="width:130px">
-        </el-date-picker>
-      </el-form-item>
       <el-form-item label="事件">
-        <div v-for="(event, index) in form.events" :key="index" style="display: flex; margin-bottom:20px;">
-          <el-form-item :prop="`events.${index}.month`" :rules="formRules.month">
-            <el-date-picker v-model="event['month']" type="month" placeholder="选择月" style="width:130px"> </el-date-picker>
+        <div style="display: flex;  margin-bottom:20px;">
+          <el-form-item prop="yearmonth" :rules="formRules.yearmonth">
+            <el-date-picker v-model="form.yearmonth" type="month" value-format="yyyy-MM" placeholder="选择年月"
+              style="width:130px"> </el-date-picker>
           </el-form-item>
-          <el-form-item :prop="`events.${index}.desc`" style="margin:0 10px; flex:1;" :rules="formRules.desc">
-            <el-input v-model="event['desc']" placeholder="请输入事件" clearable></el-input>
+          <el-form-item prop="description" style="margin:0 10px; flex:1;" :rules="formRules.description">
+            <el-input v-model="form.description" placeholder="请输入事件" clearable></el-input>
           </el-form-item>
-          <el-button type="primary" size="mini" @click="addEvent" icon="el-icon-plus" v-if="index === 0"> </el-button>
-          <el-button type="danger" size="mini" @click="removeEvent(index)" icon="el-icon-minus" v-else> </el-button>
         </div>
 
       </el-form-item>
@@ -47,18 +42,12 @@ export default {
       loading: false,
       title: '修改企业发展史',
       form: {
-        year: '',
-        events: [
-          {
-            month: '',
-            desc: '',
-          }
-        ],
+        yearmonth: '',
+        description: '',
       },
       formRules: {
-        year: [{ required: true, message: '请选择年份', trigger: 'blur' },],
-        month: [{ required: false, message: '请选择月份', trigger: 'blur' },],
-        desc: [{ required: true, message: '请输入事件', trigger: 'blur' },],
+        yearmonth: [{ required: true, message: '请选择年月', trigger: 'blur' },],
+        description: [{ required: true, message: '请输入事件', trigger: 'blur' },],
       },
     }
   },
@@ -70,20 +59,13 @@ export default {
     confirm() {
       this.$refs.form.validate(valid => {
         if (valid) {
-          this.$emit('done', this.form);
+          this.$emit('done', {
+            ...this.form,
+            year: this.form.yearmonth.split('-')[0],
+            month: this.form.yearmonth.split('-')[1]
+          });
         }
       });
-    },
-    /* 添加事件 */
-    addEvent() {
-      this.form.events.push({
-        month: '',
-        desc: '',
-      })
-    },
-    /* 删除事件 */
-    removeEvent(index) {
-      this.form.events.splice(index, 1)
     },
 
   },
@@ -95,7 +77,8 @@ export default {
         this.$nextTick(() => {
           this.$refs.form.resetFields();
           this.$refs.form.clearValidate();
-          copyObject(this.currentRow, this.form)
+          copyObject(this.currentRow, this.form, ['uuid', 'description'])
+          this.form.yearmonth = this.currentRow.year + '-' + this.currentRow.month
         });
       }
     }

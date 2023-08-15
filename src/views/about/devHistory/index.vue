@@ -7,23 +7,30 @@
     <div class="grid-wrapper">
       <el-table v-loading="gridLoading" :data="dataList" stripe class="width-percent-100"
         :header-cell-style="headerCellLayout" :cell-style="cellLayout">
-        <el-table-column type="index" label="年份" width="100"></el-table-column>
-        <el-table-column prop="title" label="事件"></el-table-column>
+        <el-table-column prop="year" label="年份" width="100"></el-table-column>
+        <el-table-column prop="month" label="月份" width="100"></el-table-column>
+        <el-table-column prop="description" label="事件"></el-table-column>
         <el-table-column prop="createDate" label="更新时间" width="160px">
           <template slot-scope='{row}'>
             {{ row.createDate | date }}
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" width="320" fixed="right">
+        <el-table-column label="操作" width="200" fixed="right">
           <template slot-scope="{ row }">
-            <el-button type="primary" size="mini" style="margin-right:6px;" @click="openEdit(row)">修改</el-button>
+            <el-button type="primary" size="mini" style="margin-right:10px;" @click="openEdit(row)">修改</el-button>
             <el-popconfirm title="确定删除吗？" @confirm="deleteHandler(row)">
               <el-button type="danger" size="mini" slot="reference">删除</el-button>
             </el-popconfirm>
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination style="text-align: center;margin: 15px;"
+        v-bind="{ ...pageOptions, ...paginationOptions }"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        hide-on-single-page
+      ></el-pagination>
     </div>
     <AddHistory :visible.sync="addVisible" @done="addDone" />
     <EditHistory :visible.sync="editVisible"  :currentRow="currentRow" @done="editDone"/>
@@ -32,7 +39,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import { queryQuickAccess, deleteQuickAccess,createQuickAccess ,updateQuickAccess} from "@/api/quickAccess";
+import { batchCreateHistory, queryHistory,updateHistory ,deleteHistory} from "@/api/devHistory";
 
 export default {
   props: {
@@ -46,15 +53,38 @@ export default {
       gridLoading: false,
       addVisible: false,
       editVisible: false,
+      paginationOptions: {
+        currentPage: 1,
+        pageSize: 15,
+        total: 0,
+      },
     };
   },
   methods: {
     async queryList() {
       this.gridLoading = true
-      const result = await queryQuickAccess({})
+      const qobj = {
+        limit:80,
+        sortBy: "year",
+        sortDirection: "desc",
+      }
+      const { pageSize, currentPage } = this.paginationOptions;
+      qobj.limit = pageSize;
+      qobj.start = (currentPage - 1) * pageSize;
+      const result = await queryHistory(qobj)
       this.dataList = result.success ? result.inventories : []
-      console.log("[  this.dataList ]-46", this.dataList);
+      this.paginationOptions.total = result.success ? result.total : 0;
+      //按照年月排序
+      this.dataList.sort((a, b) =>new Date(`${a.year}-${a.month}`) > new Date(`${b.year}-${b.month}`) ? -1 : 1)
       this.gridLoading = false
+    },
+    handleSizeChange(size) {
+      this.paginationOptions.pageSize = size;
+      this.queryList(); 
+    },
+    handleCurrentChange(current) {
+      this.paginationOptions.currentPage = current;
+      this.queryList(); 
     },
     /* 新增 */
     openAdd() {
@@ -63,7 +93,7 @@ export default {
     },
     async addDone(formData){
       this.wrapperLoading = true;
-      const result = await createQuickAccess(formData);
+      const result = await batchCreateHistory(formData);
       this.wrapperLoading = false;
       if (result.success) {
         this.$notify({
@@ -86,7 +116,7 @@ export default {
     },
     async editDone(formData){
       this.wrapperLoading = true;
-      const result = await updateQuickAccess(formData);
+      const result = await updateHistory(formData);
       this.wrapperLoading = false;
       if (result.success) {
         this.$notify({
@@ -105,7 +135,7 @@ export default {
     /* 删除 */
     async deleteHandler(row) {
       this.wrapperLoading = true
-      const result = await deleteQuickAccess(row.uuid)
+      const result = await deleteHistory(row.uuid)
       this.wrapperLoading = false
       if (result.success) {
         this.$notify({
@@ -127,7 +157,9 @@ export default {
   },
   computed: {
     ...mapState([
+      "pageOptions",
       "cellLayout",
+      "searchAccount",
       "headerCellLayout",
     ]),
   },

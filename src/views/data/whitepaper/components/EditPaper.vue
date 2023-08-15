@@ -14,8 +14,10 @@
         <el-input v-model="form.title" placeholder="请输入标题"></el-input>
       </el-form-item>
 
-      <el-form-item label="描述" prop="desc">
-        <el-input type="textarea" v-model="form.desc" show-word-limit maxlength="50" placeholder="请输入描述"></el-input>
+      <el-form-item label="描述" prop="description">
+        <el-input type="textarea" v-model="form.description" :autosize="{
+          minRows: 4,
+        }" show-word-limit maxlength="200" placeholder="请输入描述"></el-input>
       </el-form-item>
       <el-form-item label="文件" prop="fileLink">
         <el-upload class="file-upload" drag action="https://jsonplaceholder.typicode.com/posts/"
@@ -40,9 +42,9 @@ export default {
       type: Boolean,
       default: false,
     },
-    currentRow:{
-      type:Object,
-      default:()=>({})
+    currentRow: {
+      type: Object,
+      default: () => ({})
     }
   },
   data() {
@@ -61,6 +63,10 @@ export default {
         title: [{ required: true, message: '请输入标题', trigger: 'blur' },],
         description: [{ required: true, message: '请输入描述', trigger: 'blur' },],
       },
+      fileList: [{
+        name: 'food.jpeg',
+        url: 'https://jsonplaceholder.typicode.com/posts/',
+      }]
     }
   },
   methods: {
@@ -72,7 +78,7 @@ export default {
       this.$refs.form.validate(valid => {
         if (valid) {
           const { cover } = this.form
-          this.form.cover =  cover.startsWith('http')  ? cover.split('imgs/')[1] : cover
+          this.form.cover = cover.startsWith('http') ? cover.split('imgs/')[1] : cover
           this.$emit('done', this.form);
         }
       });
@@ -83,7 +89,7 @@ export default {
       this.form.cover = 'paper/' + file.name
     },
     handleBeforeUpload(file) {
-      const isEnableType  = ['image/jpeg', 'image/png', 'image/jpg', 'image/svg+xml'].includes(file.type);
+      const isEnableType = ['image/jpeg', 'image/png', 'image/jpg', 'image/svg+xml'].includes(file.type);
       const isLt2M = file.size / 1024 / 1024 < 2;
       if (!isEnableType) {
         this.$message.error('上传图片只能是 【JPG、JPEG、PNG、SVG】格式!');
@@ -93,11 +99,27 @@ export default {
       }
       return isLt2M;
     },
+    // 上传文件
+    handleUploadSuccessFile(_, file) {
+      this.form.fileLink = 'paper/' + file.name
+      const fileObj = {
+        name: file.name,
+        url: URL.createObjectURL(file.raw),
+      }
+      this.fileList.push(fileObj);
+    },
+    handleBeforeUploadFile(file) {
+      //上传 pdf
+      const isEnableType = ['application/pdf'].includes(file.type);
+      if (!isEnableType) {
+        this.$message.error('上传文件只能是 【 PDF 】格式!');
+      }
+    },
   },
   watch: {
-     visible(val) {
+    visible(val) {
       if (val) {
-        this.$nextTick( () => {
+        this.$nextTick(() => {
           this.$refs.form.resetFields();
           this.$refs.form.clearValidate();
           this.imageUrl = this.currentRow.cover;
@@ -105,7 +127,7 @@ export default {
             name: this.currentRow.fileLink.split('/').pop(),
             url: this.currentRow.fileLink,
           }] : [];
-         copyObject(this.currentRow,this.form )
+          copyObject(this.currentRow, this.form)
         });
       }
     }
@@ -120,6 +142,7 @@ export default {
   cursor: pointer;
   position: relative;
   overflow: hidden;
+
   &:hover {
     border-color: #409EFF;
   }
@@ -128,6 +151,7 @@ export default {
 .avatar-uploader ::v-deep .el-upload .el-upload-dragger {
   width: 100px;
   height: 100px;
+
   .el-icon-plus {
     display: flex;
     align-items: center;

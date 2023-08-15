@@ -14,7 +14,7 @@ export default new Vuex.Store({
         pageOptions: {
             background: true,
             layout: 'prev, pager, next, jumper, sizes, total',
-            pageSizes: [10, 20, 30, 50, 100]
+            pageSizes: [10, 15,20, 30, 50, 100]
         },
         headerCellLayout: { textAlign: 'center', padding: '8px 0', color: '#505050', backgroundColor: '#F5F7FA' },
         headerCellBg: { textAlign: 'center', backgroundColor: '#F5F7FA' },

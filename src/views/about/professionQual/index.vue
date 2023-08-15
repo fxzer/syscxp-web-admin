@@ -21,9 +21,9 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" width="320" fixed="right">
+        <el-table-column label="操作" width="200" fixed="right">
           <template slot-scope="{ row }">
-            <el-button type="primary" size="mini" style="margin-right:6px;" @click="openEdit(row)">修改</el-button>
+            <el-button type="primary" size="mini" style="margin-right:10px;" @click="openEdit(row)">修改</el-button>
             <el-popconfirm title="确定删除吗？" @confirm="deleteHandler(row)">
               <el-button type="danger" size="mini" slot="reference">删除</el-button>
             </el-popconfirm>
@@ -141,7 +141,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped lang="scss">
 .cover{
   width: 70px;
   height: 100px;

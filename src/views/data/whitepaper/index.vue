@@ -9,7 +9,11 @@
       <el-table v-loading="gridLoading" :data="dataList" stripe class="width-percent-100"
         :header-cell-style="headerCellLayout" :cell-style="cellLayout">
         <el-table-column type="index" label="序号" width="100"></el-table-column>
-        <el-table-column prop="cover" label="图片"></el-table-column>
+        <el-table-column prop="cover" label="封面">
+          <template slot-scope='{row}'>
+           <img :src="row.cover" class="cover"  >
+          </template>
+        </el-table-column>
         <el-table-column prop="title" label="标题"></el-table-column>
         <el-table-column prop="description" label="描述"></el-table-column>
         <el-table-column prop="fileLink" label="下载链接"></el-table-column>
@@ -19,9 +23,9 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" width="320" fixed="right">
+        <el-table-column label="操作" width="200" fixed="right">
           <template slot-scope="{ row }">
-            <el-button type="primary" size="mini" style="margin-right:6px;" @click="openEdit(row)">修改</el-button>
+            <el-button type="primary" size="mini" style="margin-right:10px;" @click="openEdit(row)">修改</el-button>
             <el-popconfirm title="确定删除吗？" @confirm="deleteHandler(row)">
               <el-button type="danger" size="mini" slot="reference">删除</el-button>
             </el-popconfirm>
@@ -29,14 +33,14 @@
         </el-table-column>
       </el-table>
     </div>
-   <AddPaper :visible.sync="addVisible" @done="addDone" />
+     <AddPaper :visible.sync="addVisible" @done="addDone" />
      <EditPaper :visible.sync="editVisible"  :currentRow="currentRow" @done="editDone"/>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
-import { queryQuickAccess, deleteQuickAccess,createQuickAccess ,updateQuickAccess} from "@/api/quickAccess";
+import { queryPaper, deletePaper,createPaper ,updatePaper} from "@/api/whitepaper";
 export default {
   props: {
 
@@ -54,7 +58,7 @@ export default {
   methods: {
     async queryList() {
       this.gridLoading = true
-      const result = await queryQuickAccess({})
+      const result = await queryPaper({})
       this.dataList = result.success ? result.inventories : []
       console.log("[  this.dataList ]-46", this.dataList);
       this.gridLoading = false
@@ -65,8 +69,9 @@ export default {
       this.addVisible = true
     },
     async addDone(formData){
+      console.log("[ formData ]-68", formData);
       this.wrapperLoading = true;
-      const result = await createQuickAccess(formData);
+      const result = await createPaper(formData);
       this.wrapperLoading = false;
       if (result.success) {
         this.$notify({
@@ -89,7 +94,7 @@ export default {
     },
     async editDone(formData){
       this.wrapperLoading = true;
-      const result = await updateQuickAccess(formData);
+      const result = await updatePaper(formData);
       this.wrapperLoading = false;
       if (result.success) {
         this.$notify({
@@ -108,7 +113,7 @@ export default {
     /* 删除 */
     async deleteHandler(row) {
       this.wrapperLoading = true
-      const result = await deleteQuickAccess(row.uuid)
+      const result = await deletePaper(row.uuid)
       this.wrapperLoading = false
       if (result.success) {
         this.$notify({
@@ -136,8 +141,17 @@ export default {
     ]),
   },
   mounted() {
-    // this.queryList()
+    this.queryList()
   },
 };
 </script>
+
+<style scoped lang="scss">
+.cover{
+  width: 70px;
+  height: 100px;
+  border-radius: 4px;
+  border:1px solid #ddd;
+}
+</style>
 

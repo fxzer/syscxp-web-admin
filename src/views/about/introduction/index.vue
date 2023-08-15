@@ -3,11 +3,11 @@
     <el-form :model="form" label-width="80px" :rules="formRules" ref="form">
       <el-form-item label="标题：" prop="title">
         <el-input v-if="isEdit" v-model="form.title" placeholder="请输入标题"></el-input>
-        <h4 v-else>{{ form.title }}</h4>
+        <p v-else>{{ form.title }}</p>
       </el-form-item>
       <el-form-item label="副标题：" prop="subTitle">
         <el-input v-if="isEdit" v-model="form.subTitle" placeholder="请输入副标题"></el-input>
-        <h4 v-else>{{ form.subTitle }}</h4>
+        <p v-else>{{ form.subTitle }}</p>
       </el-form-item>
       <el-form-item label="描述：" prop="desc">
         <template  v-if="isEdit" >
