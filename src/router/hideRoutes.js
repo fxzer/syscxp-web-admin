@@ -23,5 +23,21 @@ export default [
       title: "修改新闻",
     },
   },
+  {
+    name: "AddKnowledge",
+    path: "/knowledge/add",
+    component: () => import("@/views/data/knowledge/components/AddKnowledge.vue"),
+    meta: {
+      title: "添加知识",  
+    },
+  },
+  {
+    name: "EditKnowledge",
+    path: "/knowledge/edit",
+    component: () => import("@/views/data/knowledge/components/EditKnowledge.vue"),
+    meta: {
+      title: "修改知识",
+    },
+  },
 
 ];

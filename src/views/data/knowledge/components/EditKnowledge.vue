@@ -5,7 +5,7 @@
       <div class="new-item">
         <el-form-item label="封面" prop="cover">
           <el-upload class="cover" drag action="/website/api/uploadfile" :data="{
-            fileType: 'news'
+            fileType: 'knowledge'
           }" :show-file-list="false" :on-success="handleUploadSuccess" :before-upload="handleBeforeUpload">
             <img v-if="imageUrl" :src="imageUrl" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -13,11 +13,19 @@
         </el-form-item>
         <div class="title-desc">
           <el-form-item label="标题" prop="title">
-            <el-input v-model="form.title" placeholder="请输入标题"></el-input>
-          </el-form-item>
+          <el-input v-model="form.title" placeholder="请输入标题"></el-input>
+        </el-form-item>
+          <div style="display: flex;">
+            <el-form-item label="来源" prop="source" style="flex:1;">
+              <el-input v-model="form.source" placeholder="请输入来源"></el-input>
+            </el-form-item>
+            <el-form-item label="作者" prop="writer">
+              <el-input v-model="form.writer" placeholder="请输入作者"></el-input>
+            </el-form-item>
+          </div>
           <el-form-item label="描述" prop="description">
             <el-input type="textarea" v-model="form.description" :autosize="{
-              minRows: 5,
+              minRows: 4,
             }" show-word-limit maxlength="200" placeholder="请输入描述"></el-input>
           </el-form-item>
         </div>
@@ -37,8 +45,10 @@
             <span style="color:#f8a24b">情况1：</span>使用<a href="https://www.365editor.com/" target="_blank">365编辑器</a>排版文章 ==>复制全文==>粘贴到编辑区==>发布；
             <span style="color:#f8a24b">情况2（微信公众号已发布的文章）</span>：微信公众号编辑==>复制全文到<a href="https://www.365editor.com/" target="_blank">365编辑器</a>粘贴==>替换微信平台图片==>复制全文==>粘贴到编辑区==>发布</p>
           <div>
-            <el-button size="medium" @click="goToNewList">取消</el-button>
-           <el-button size="medium" type="primary" @click="onSubmit" :loading="wrapperLoading">发布</el-button>
+            <div>
+              <el-button size="medium" @click="goToNewList" style="margin-left:10px;">取消</el-button>
+              <el-button size="medium" type="primary" @click="onSubmit" :loading="wrapperLoading">发布</el-button>
+            </div>
           </div>
         </div>
       </el-form-item>
@@ -51,7 +61,7 @@
 
 import { copyObject } from '@/utils/common'
 
-import { updateNews,queryNews } from "@/api/news";
+import { updateKnowledge,queryKnowledge } from "@/api/knowledge";
 export default {
   props: {
 
@@ -62,6 +72,8 @@ export default {
       form: {
         cover: "",
         title: "",
+        source: "",
+        writer: "",
         content: "",
         description: "",
       },
@@ -69,13 +81,15 @@ export default {
       formRules: {
         cover: [{ required: true, message: '请上传图片', trigger: 'blur' },],
         title: [{ required: true, message: '请输入标题', trigger: 'blur' },],
+        source: [{ required: true, message: '请输入来源', trigger: 'blur' },],
+        writer: [{ required: true, message: '请输入作者', trigger: 'blur' },],
         description: [{ required: true, message: '请输入描述', trigger: 'blur' },],
         content: [{ required: true, message: '请输入内容', trigger: 'blur' },],
       },
     };
   },
   methods: {
-    async queryCurrentNew() {
+    async queryCurrentKnowledge() {
       this.wrapperLoading = true
       const qobj = {
         conditions:[
@@ -87,8 +101,9 @@ export default {
         ]
         
       }
-      const result = await queryNews(qobj)
+      const result = await queryKnowledge(qobj)
       const currentNew = result.success ? result.inventories[0] : {}
+      console.log("[ currentNew ]-104", currentNew);
       copyObject(currentNew,this.form)
       this.form.cover = currentNew.cover.startsWith('http')  ? currentNew.cover.split('imgs/')[1] : currentNew.cover  
       this.imageUrl = currentNew.cover
@@ -96,7 +111,7 @@ export default {
     },
     handleUploadSuccess(_, file) {
       this.imageUrl = URL.createObjectURL(file.raw);
-      this.form.cover = 'news/' + file.name
+      this.form.cover = 'knowledge/' + file.name
     },
     handleBeforeUpload(file) {
       const isEnableType = ['image/jpeg', 'image/png', 'image/jpg', 'image/svg+xml'].includes(file.type);
@@ -116,14 +131,14 @@ export default {
       this.$refs.form.validate(async (valid) => {
         if (valid) {
           this.wrapperLoading = true;
-          const result = await updateNews(this.form);
+          const result = await updateKnowledge(this.form);
           this.wrapperLoading = false;
           if (result.success) {
             this.$notify({
               type: "success",
               message: `修改成功`,
             });
-            this.$router.replace("/news")
+            this.$router.replace("/knowledge")
           } else {
             this.$notify({
               type: "error",
@@ -136,12 +151,12 @@ export default {
       });
     },
     goToNewList() {
-      this.$router.replace("/news")
+      this.$router.replace("/knowledge")
     }
   },
   mounted(){
     if(this.$route.query.uuid){
-      this.queryCurrentNew()
+      this.queryCurrentKnowledge()
     }
   }
 };
