@@ -18,6 +18,7 @@ export function queryKnowledge(queryOptions) {
 export function updateKnowledge(data) {
   return requestWrapper(apiUrl.baseUrl, apiUrl.update, data);
 }
+
 export function deleteKnowledge(uuid) {
   return requestWrapper(apiUrl.baseUrl, apiUrl.delete, { uuid });
 }

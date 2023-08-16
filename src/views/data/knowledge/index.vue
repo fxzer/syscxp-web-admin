@@ -7,14 +7,10 @@
     <div class="grid-wrapper">
       <el-table v-loading="gridLoading" :data="dataList" stripe class="width-percent-100"
         :header-cell-style="headerCellLayout" :cell-style="cellLayout">
-        <el-table-column prop="cover" label="封面" width="200">
-          <template slot-scope='{row}'>
-            <img :src="row.cover" class="cover">
-          </template>
-        </el-table-column>
         <el-table-column prop="title" label="标题"></el-table-column>
         <el-table-column prop="writer" label="作者"></el-table-column>
         <el-table-column prop="source" label="来源"></el-table-column>
+        <el-table-column prop="counts" label="阅读次数"></el-table-column>
         <el-table-column prop="description" label="描述"></el-table-column>
         <el-table-column prop="createDate" label="更新时间" width="160">
           <template slot-scope='{row}'>
@@ -65,7 +61,7 @@ export default {
     async queryList() {
       this.gridLoading = true
       const qobj = {
-        fields:['uuid','cover','title','writer','source','description','createDate']
+        fields:['uuid','counts','title','writer','source','description','createDate']
       }
       const { pageSize, currentPage } = this.paginationOptions;
       qobj.limit = pageSize;
@@ -152,11 +148,5 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.cover {
-  width: 120px;
-  height: 60px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
 </style>
 

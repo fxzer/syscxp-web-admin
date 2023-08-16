@@ -138,6 +138,8 @@ export default {
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  width: 100px;
+  height: 100px;
   &:hover {
     border-color: #409EFF;
   }
@@ -156,10 +158,11 @@ export default {
     height: 100%;
   }
 
-  .avatar {
-    width: 100%;
-    height: 100%;
+   
+}
+.avatar {
+    width: 100px;
+    height: 100px;
     display: block;
   }
-}
 </style>

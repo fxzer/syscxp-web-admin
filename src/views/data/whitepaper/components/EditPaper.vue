@@ -5,8 +5,8 @@
         <el-upload class="cover" action="/website/api/uploadfile" :data="{
           fileType: 'paper'
         }" :show-file-list="false" :on-success="handleUploadSuccess" :before-upload="handleBeforeUpload">
-          <img v-if="imageUrl" :src="imageUrl" class="avatar">
-          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+         <img v-if="imageUrl" :src="imageUrl" class="avatar">  
+           <i v-else class="el-icon-plus avatar-uploader-icon"></i> 
         </el-upload>
       </el-form-item>
 
@@ -20,11 +20,14 @@
         }" show-word-limit maxlength="200" placeholder="请输入描述"></el-input>
       </el-form-item>
       <el-form-item label="文件" prop="fileLink">
+
         <el-upload class="file-upload" drag action="https://jsonplaceholder.typicode.com/posts/"
           :on-success="handleUploadSuccessFile" :fileList="fileList" :before-upload="handleBeforeUploadFile">
           <i class="el-icon-upload"></i>
           <div class="el-upload__text">将文件拖到此处，或<em>点击上传，</em>只能上传【PDF】格式文件!</div>
         </el-upload>
+
+
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -136,7 +139,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.avatar-uploader ::v-deep .el-upload {
+.cover ::v-deep .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;
   cursor: pointer;
@@ -146,26 +149,47 @@ export default {
   &:hover {
     border-color: #409EFF;
   }
+
+  width: 150px;
+  height: 200px;
+}
+.cover img{
+  width: 150px;
+  height: 200px;
+}
+.file-upload ::v-deep .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    border-color: #409EFF;
+  }
+
+  width: 450px;
+  height: 200px;
 }
 
-.avatar-uploader ::v-deep .el-upload .el-upload-dragger {
-  width: 100px;
-  height: 100px;
+::v-deep .el-upload .el-upload-dragger {
+  width: 100%;
+  height: 100%;
+}
 
-  .el-icon-plus {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 30px;
-    color: #8c939d;
-    width: 100%;
-    height: 100%;
-  }
+.el-icon-plus {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  color: #8c939d;
+  width: 100%;
+  height: 100%;
+}
 
-  .avatar {
-    width: 100%;
-    height: 100%;
-    display: block;
-  }
+.avatar {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 </style>

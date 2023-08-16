@@ -3,19 +3,16 @@
     element-loading-background="rgba(0, 0, 0, 0.5)">
     <el-form :model="form" ref="form" :rules="formRules" label-width="60px">
       <div class="new-item">
-        <el-form-item label="封面" prop="cover">
-          <el-upload class="cover" drag action="/website/api/uploadfile" :data="{
-            fileType: 'knowledge'
-          }" :show-file-list="false" :on-success="handleUploadSuccess" :before-upload="handleBeforeUpload">
-            <img v-if="imageUrl" :src="imageUrl" class="avatar">
-            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-          </el-upload>
+        <el-form-item label="封面"   style="margin-right:20px;">
+          <div class="cover-bg">
+            <p class="cover-text">{{ form.title }}</p>
+          </div>
         </el-form-item>
 
         <div class="title-desc">
           <el-form-item label="标题" prop="title">
-          <el-input v-model="form.title" placeholder="请输入标题"></el-input>
-        </el-form-item>
+            <el-input v-model="form.title" placeholder="请输入标题"></el-input>
+          </el-form-item>
           <div style="display: flex;">
             <el-form-item label="来源" prop="source" style="flex:1;">
               <el-input v-model="form.source" placeholder="请输入来源"></el-input>
@@ -42,18 +39,18 @@
 
       <el-form-item>
         <div class="footer">
-            <p class="tips">
+          <p class="tips">
             <b>使用方式：</b>
             <span style="color:#f8a24b">情况1：</span>使用<a href="https://www.365editor.com/" target="_blank">365编辑器</a>排版文章
             ==>复制全文==>粘贴到编辑区==>发布；
             <span style="color:#f8a24b">情况2（微信公众号已发布的文章）</span>：微信公众号编辑==>复制全文到<a href="https://www.365editor.com/"
               target="_blank">365编辑器</a>粘贴==>替换微信平台图片==>复制全文==>粘贴到编辑区==>发布
           </p>
-         
-           <div >
+
+          <div>
             <el-button size="medium" @click="goToNewList" style="margin-left:10px;">取消</el-button>
             <el-button size="medium" type="primary" @click="onSubmit" :loading="wrapperLoading">发布</el-button>
-           </div>
+          </div>
         </div>
 
       </el-form-item>
@@ -74,16 +71,13 @@ export default {
     return {
       wrapperLoading: false,
       form: {
-        cover: "",
         title: "",
         source: "",
         writer: "",
         content: "",
         description: "",
       },
-      imageUrl: '',
       formRules: {
-        cover: [{ required: true, message: '请上传图片', trigger: 'blur' },],
         title: [{ required: true, message: '请输入标题', trigger: 'blur' },],
         source: [{ required: true, message: '请输入来源', trigger: 'blur' },],
         writer: [{ required: true, message: '请输入作者', trigger: 'blur' },],
@@ -93,21 +87,6 @@ export default {
     };
   },
   methods: {
-    handleUploadSuccess(_, file) {
-      this.imageUrl = URL.createObjectURL(file.raw);
-      this.form.cover = 'knowledge/' + file.name
-    },
-    handleBeforeUpload(file) {
-      const isEnableType = ['image/jpeg', 'image/png', 'image/jpg', 'image/svg+xml'].includes(file.type);
-      const isLt2M = file.size / 1024 / 1024 < 2;
-      if (!isEnableType) {
-        this.$message.error('上传图片只能是 【JPG、JPEG、PNG、SVG】格式!');
-      }
-      if (!isLt2M) {
-        this.$message.error('上传图片大小不能超过 2MB!');
-      }
-      return isLt2M;
-    },
     handleChange(val) {
       this.form.content = val
     },
@@ -136,7 +115,8 @@ export default {
     },
     goToNewList() {
       this.$router.replace("/knowledge")
-    }
+    },
+
   },
 };
 </script>
@@ -199,52 +179,14 @@ export default {
   }
 }
 
-.cover ::v-deep .el-upload {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-
-  &:hover {
-    border-color: #409EFF;
-  }
-
-  width: 100%;
-  height: 100%;
-}
-
-.cover {
-  width: 320px;
-  height: 180px;
-}
 
 
-::v-deep .el-upload .el-upload-dragger {
-  width: 100%;
-  height: 100%;
-}
-
-.el-icon-plus {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 30px;
-  color: #8c939d;
-  width: 100%;
-  height: 100%;
-}
 
 .wrapper {
   background: #fff;
   padding: 20px 20px 5px 0;
 }
 
-.avatar {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
 
 .footer {
   display: flex;
@@ -262,4 +204,28 @@ export default {
 
 .preview ::v-deep img {
   margin: auto;
-}</style>
+}
+
+.cover-bg {
+  box-sizing: border-box;
+  width: 240px;
+  height: 160px;
+  padding: 45px 24px;
+  background-image: url(../../../../assets/images/cover.svg);
+
+  .cover-text {
+    font-size: 22px;
+    line-height: 1.5;
+    text-align: center;
+    color: #000;
+    //两行溢出省略
+    display: -webkit-box;
+    line-break: anywhere;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-box-orient: vertical;/* 布局方向 */
+    -webkit-line-clamp: 2; /* 显示三行文本 */
+
+  }
+}
+</style>

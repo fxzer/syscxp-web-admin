@@ -155,7 +155,10 @@ export default {
   width: 150px;
   height: 200px;
 }
-
+.cover img{
+  width: 150px;
+  height: 200px;
+}
 .file-upload ::v-deep .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;

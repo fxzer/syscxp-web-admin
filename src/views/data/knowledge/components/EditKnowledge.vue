@@ -3,13 +3,10 @@
     element-loading-background="rgba(0, 0, 0, 0.5)">
     <el-form :model="form" ref="form" :rules="formRules" label-width="60px">
       <div class="new-item">
-        <el-form-item label="封面" prop="cover">
-          <el-upload class="cover" drag action="/website/api/uploadfile" :data="{
-            fileType: 'knowledge'
-          }" :show-file-list="false" :on-success="handleUploadSuccess" :before-upload="handleBeforeUpload">
-            <img v-if="imageUrl" :src="imageUrl" class="avatar">
-            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-          </el-upload>
+        <el-form-item label="封面"   style="margin-right:20px;">
+          <div class="cover-bg">
+            <p class="cover-text">{{ form.title }}</p>
+          </div>
         </el-form-item>
         <div class="title-desc">
           <el-form-item label="标题" prop="title">
@@ -70,16 +67,13 @@ export default {
     return {
       wrapperLoading: false,
       form: {
-        cover: "",
         title: "",
         source: "",
         writer: "",
         content: "",
         description: "",
       },
-      imageUrl: '',
       formRules: {
-        cover: [{ required: true, message: '请上传图片', trigger: 'blur' },],
         title: [{ required: true, message: '请输入标题', trigger: 'blur' },],
         source: [{ required: true, message: '请输入来源', trigger: 'blur' },],
         writer: [{ required: true, message: '请输入作者', trigger: 'blur' },],
@@ -103,26 +97,8 @@ export default {
       }
       const result = await queryKnowledge(qobj)
       const currentNew = result.success ? result.inventories[0] : {}
-      console.log("[ currentNew ]-104", currentNew);
       copyObject(currentNew,this.form)
-      this.form.cover = currentNew.cover.startsWith('http')  ? currentNew.cover.split('imgs/')[1] : currentNew.cover  
-      this.imageUrl = currentNew.cover
       this.wrapperLoading = false
-    },
-    handleUploadSuccess(_, file) {
-      this.imageUrl = URL.createObjectURL(file.raw);
-      this.form.cover = 'knowledge/' + file.name
-    },
-    handleBeforeUpload(file) {
-      const isEnableType = ['image/jpeg', 'image/png', 'image/jpg', 'image/svg+xml'].includes(file.type);
-      const isLt2M = file.size / 1024 / 1024 < 2;
-      if (!isEnableType) {
-        this.$message.error('上传图片只能是 【JPG、JPEG、PNG、SVG】格式!');
-      }
-      if (!isLt2M) {
-        this.$message.error('上传图片大小不能超过 2MB!');
-      }
-      return isLt2M;
     },
     handleChange(val) {
       this.form.content = val
@@ -277,5 +253,28 @@ export default {
 }
 .preview ::v-deep img{
   margin: auto;
+}
+
+.cover-bg {
+  box-sizing: border-box;
+  width: 240px;
+  height: 160px;
+  padding: 45px 24px;
+  background-image: url(../../../../assets/images/cover.svg);
+
+  .cover-text {
+    font-size: 22px;
+    line-height: 1.5;
+    text-align: center;
+    color: #000;
+    //两行溢出省略
+    display: -webkit-box;
+    line-break: anywhere;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-box-orient: vertical;/* 布局方向 */
+    -webkit-line-clamp: 2; /* 显示三行文本 */
+
+  }
 }
 </style>
