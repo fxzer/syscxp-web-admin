@@ -1,8 +1,17 @@
 <template>
   <div v-loading.fullscreen.lock="wrapperLoading" element-loading-text="拼命加载中"
     element-loading-background="rgba(0, 0, 0, 0.5)">
-    <div class="opt-group">
-      <el-button type="primary" size="small" @click="openAdd">新增</el-button>
+    <div class="opt-group" style="display: flex;">
+      <el-button type="primary" size="small" @click="openAdd">新增</el-button> 
+      <div style="margin-left: 20px;">
+        <span>资质分类：</span>
+          <el-select v-model="qualType"   placeholder="请选择资质分类"   @change="qualTypeChange">
+            <el-option value="全部">全部 </el-option>
+            <el-option value="权威资质">权威资质 </el-option>
+            <el-option value="荣誉资质">荣誉资质 </el-option>
+          </el-select>
+      </div>
+      
     </div>
     <div class="grid-wrapper">
       <el-table v-loading="gridLoading" :data="dataList" stripe class="width-percent-100"
@@ -51,12 +60,26 @@ export default {
       gridLoading: false,
       addVisible: false,
       editVisible: false,
+      qualType:'全部',
     };
   },
   methods: {
+    qualTypeChange(){
+      this.queryList()
+    },
     async queryList() {
       this.gridLoading = true
-      const result = await queryQualification({})
+      const conditions = []
+      if(this.qualType !== '全部'){
+        conditions.push({
+          name: 'type',
+          op: '=',
+          value: this.qualType,
+        })
+      }
+      const result = await queryQualification({
+        conditions
+      })
       this.dataList = result.success ? result.inventories : []
       this.gridLoading = false
     },

@@ -59,7 +59,7 @@ export default {
   watch:{
     descList:{
       handler(val){
-        this.form.description = JSON.stringify(val).replace('"','\\"');
+        this.form.description = JSON.stringify(val.filter(Boolean)).replace('"','\\"');
       },
       deep:true,
       immediate:true
