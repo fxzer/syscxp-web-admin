@@ -5,7 +5,7 @@
       <div class="new-item">
         <el-form-item label="封面"   style="margin-right:20px;">
           <div class="cover-bg">
-            <p class="cover-text">{{ form.title }}</p>
+            <p class="cover-text">{{ previewTitle }}</p>
           </div>
         </el-form-item>
 
@@ -85,6 +85,12 @@ export default {
         content: [{ required: true, message: '请输入内容', trigger: 'blur' },],
       },
     };
+  },
+  computed:{
+    previewTitle(){
+      let { title } = this.form
+      return title.length>15 ? title.substring(0,15)+'...' : title
+    }
   },
   methods: {
     handleChange(val) {
@@ -179,9 +185,6 @@ export default {
   }
 }
 
-
-
-
 .wrapper {
   background: #fff;
   padding: 20px 20px 5px 0;
@@ -214,18 +217,14 @@ export default {
   background-image: url(../../../../assets/images/cover.svg);
 
   .cover-text {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 22px;
     line-height: 1.5;
     text-align: center;
     color: #000;
-    //两行溢出省略
-    display: -webkit-box;
-    line-break: anywhere;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    -webkit-box-orient: vertical;/* 布局方向 */
-    -webkit-line-clamp: 2; /* 显示三行文本 */
-
   }
 }
 </style>
