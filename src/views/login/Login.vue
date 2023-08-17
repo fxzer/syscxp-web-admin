@@ -326,7 +326,7 @@ export default {
   bottom: 0;
   left: 0;
   right: 0;
-  background: #1e2030;
+  background: #F8F9FC;
 
   .form-wrapper {
     position: relative;
@@ -343,7 +343,7 @@ export default {
     max-width: 410px;
     padding: 15px 30px;
     border-radius: 8px;
-    box-shadow: 0 0 3px #ddd;
+    box-shadow: 0 0 8px #ddd;
     background: #fff;
 
     h1 {
