@@ -3,7 +3,7 @@
     <el-form :model="form" label-width="60px" :rules="formRules" ref="form">
       <el-form-item label="封面" prop="cover">
         <el-upload class="cover" action="/website/api/uploadfile" :data="{
-          fileType: 'paper'
+          fileType: 'paperimg'
         }" :show-file-list="false" :on-success="handleUploadSuccess" :before-upload="handleBeforeUpload">
          <img v-if="imageUrl" :src="imageUrl" class="avatar">  
            <i v-else class="el-icon-plus avatar-uploader-icon"></i> 
@@ -21,8 +21,13 @@
       </el-form-item>
       <el-form-item label="文件" prop="fileLink">
 
-        <el-upload class="file-upload" drag action="https://jsonplaceholder.typicode.com/posts/"
-          :on-success="handleUploadSuccessFile" :fileList="fileList" :before-upload="handleBeforeUploadFile">
+        <el-upload class="file-upload" drag action="/website/api/uploadfile"
+
+        :data="{
+          fileType: 'paperfile'
+        }"
+          :on-success="handleUploadSuccessFile" :multiple="false" :limit="1"  :on-remove="handleRemoveFile"
+          :on-exceed="handleLimit"  :fileList="fileList" :before-upload="handleBeforeUploadFile">
           <i class="el-icon-upload"></i>
           <div class="el-upload__text">将文件拖到此处，或<em>点击上传，</em>只能上传【PDF】格式文件!</div>
         </el-upload>
@@ -56,7 +61,7 @@ export default {
       form: {
         cover: '',
         title: '',
-        link: '',
+        fileLink: '',
         description: '',
       },
       imageUrl: '',
@@ -66,10 +71,7 @@ export default {
         title: [{ required: true, message: '请输入标题', trigger: 'blur' },],
         description: [{ required: true, message: '请输入描述', trigger: 'blur' },],
       },
-      fileList: [{
-        name: 'food.jpeg',
-        url: 'https://jsonplaceholder.typicode.com/posts/',
-      }]
+      fileList: []
     }
   },
   methods: {
@@ -89,7 +91,7 @@ export default {
     // 上传图片
     handleUploadSuccess(_, file) {
       this.imageUrl = URL.createObjectURL(file.raw);
-      this.form.cover = 'paper/' + file.name
+      this.form.cover = 'paperimg/' + file.name
     },
     handleBeforeUpload(file) {
       const isEnableType = ['image/jpeg', 'image/png', 'image/jpg', 'image/svg+xml'].includes(file.type);
@@ -104,7 +106,7 @@ export default {
     },
     // 上传文件
     handleUploadSuccessFile(_, file) {
-      this.form.fileLink = 'paper/' + file.name
+      this.form.fileLink = 'paperfile/' + file.name
       const fileObj = {
         name: file.name,
         url: URL.createObjectURL(file.raw),
@@ -118,6 +120,13 @@ export default {
         this.$message.error('上传文件只能是 【 PDF 】格式!');
       }
     },
+    handleLimit(){
+      this.$message.error('只能上传一个文件，请先移除原来文件!');
+    },
+    handleRemoveFile(){
+      this.fileList.pop()
+      this.form.fileLink = ''
+    }
   },
   watch: {
     visible(val) {
@@ -131,6 +140,7 @@ export default {
             url: this.currentRow.fileLink,
           }] : [];
           copyObject(this.currentRow, this.form)
+          console.log("[ this.form ]-134", this.form);
         });
       }
     }

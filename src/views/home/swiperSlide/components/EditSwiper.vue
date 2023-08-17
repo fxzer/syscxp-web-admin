@@ -78,8 +78,8 @@ export default {
     confirm() {
       this.$refs.form.validate(valid => {
         if (valid) {
-          const { icon } = this.form
-          this.form.icon = icon.startsWith('http') ? icon.split('imgs/')[1] : icon
+          const { bgPath } = this.form
+          this.form.bgPath = bgPath.startsWith('http') ? bgPath.split('imgs/')[1] : bgPath
           this.$emit('done', this.form);
         }
       });
