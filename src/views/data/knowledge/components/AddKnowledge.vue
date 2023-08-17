@@ -48,7 +48,7 @@
           </p>
 
           <div>
-            <el-button size="medium" @click="goToNewList" style="margin-left:10px;">取消</el-button>
+            <el-button size="medium" @click="gotoList" style="margin-left:10px;">取消</el-button>
             <el-button size="medium" type="primary" @click="onSubmit" :loading="wrapperLoading">发布</el-button>
           </div>
         </div>
@@ -113,7 +113,7 @@ export default {
         }
       });
     },
-    goToNewList() {
+    gotoList() {
       this.$router.replace("/knowledge")
     },
 

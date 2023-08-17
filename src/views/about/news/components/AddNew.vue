@@ -34,11 +34,15 @@
         <div class="footer">
           <p class="tips">
             <b>使用方式：</b>
-            <span style="color:#f8a24b">情况1：</span>使用<a href="https://www.365editor.com/" target="_blank">365编辑器</a>排版文章 ==>复制全文==>粘贴到编辑区==>发布；
-            <span style="color:#f8a24b">情况2（微信公众号已发布的文章）</span>：微信公众号编辑==>复制全文到<a href="https://www.365editor.com/" target="_blank">365编辑器</a>粘贴==>替换微信平台图片==>复制全文==>粘贴到编辑区==>发布</p>
+            <span style="color:#f8a24b">情况1：</span>使用<a href="https://www.365editor.com/" target="_blank">365编辑器</a>排版文章
+            ==>复制全文==>粘贴到编辑区==>发布；
+            <span style="color:#f8a24b">情况2（微信公众号已发布的文章）</span>：微信公众号编辑==>复制全文到<a href="https://www.365editor.com/"
+              target="_blank">365编辑器</a>粘贴==>替换微信平台图片==>复制全文==>粘贴到编辑区==>发布
+          </p>
+
           <div>
-            <el-button size="medium" @click="goToNewList">取消</el-button>
-           <el-button size="medium" type="primary" @click="onSubmit" :loading="wrapperLoading">发布</el-button>
+            <el-button size="medium" @click="gotoList" style="margin-left:10px;">取消</el-button>
+            <el-button size="medium" type="primary" @click="onSubmit" :loading="wrapperLoading">发布</el-button>
           </div>
         </div>
        
@@ -116,7 +120,7 @@ export default {
         }
       });
     },
-    goToNewList() {
+    gotoList() {
       this.$router.replace("/news")
     }
   },
@@ -229,7 +233,8 @@ export default {
   margin-top: 15px;
   justify-content: space-between;
   align-items: center;
-  .tips{
+
+  .tips {
     background-color: #F2F2F3;
     padding: 0 10px;
     border-radius: 5px;
