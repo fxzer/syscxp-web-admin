@@ -249,12 +249,6 @@ export default {
   margin-top: 15px;
   justify-content: space-between;
   align-items: center;
-  .tips{
-    background-color: #F2F2F3;
-    padding: 0 10px;
-    border-radius: 5px;
-    font-size: 12px;
-  }
 }
 .preview ::v-deep img{
   margin: auto;
