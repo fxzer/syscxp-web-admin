@@ -39,13 +39,7 @@
 
       <el-form-item>
         <div class="footer">
-          <p class="tips">
-            <b>使用方式：</b>
-            <span style="color:#f8a24b">情况1：</span>使用<a href="https://www.365editor.com/" target="_blank">365编辑器</a>排版文章
-            ==>复制全文==>粘贴到编辑区==>发布；
-            <span style="color:#f8a24b">情况2（微信公众号已发布的文章）</span>：微信公众号编辑==>复制全文到<a href="https://www.365editor.com/"
-              target="_blank">365编辑器</a>粘贴==>替换微信平台图片==>复制全文==>粘贴到编辑区==>发布
-          </p>
+          <el-button type="primary"   size="medium"  @click="helpVisible = true">查看使用说明</el-button>
 
           <div>
             <el-button size="medium" @click="gotoList" style="margin-left:10px;">取消</el-button>
@@ -54,8 +48,8 @@
         </div>
 
       </el-form-item>
-
     </el-form>
+    <EditorHelp :visible.sync="helpVisible"></EditorHelp>
   </div>
 </template>
 
@@ -64,11 +58,12 @@
 /*  */
 import { createKnowledge } from "@/api/knowledge";
 export default {
-  props: {
-
+  components:{
+    EditorHelp: () => import('@/views/EditorHelp.vue')
   },
   data() {
     return {
+      helpVisible: false,
       wrapperLoading: false,
       form: {
         title: "",
