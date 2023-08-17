@@ -9,7 +9,7 @@
       <el-table v-loading="gridLoading" :data="dataList" stripe class="width-percent-100"
         :header-cell-style="headerCellLayout" :cell-style="cellLayout">
         <el-table-column type="index" label="序号" width="100"></el-table-column>
-        <el-table-column prop="cover" label="封面">
+        <el-table-column prop="cover" label="封面" width="100">
           <template slot-scope='{row}'>
            <img :src="row.cover" class="cover"  >
           </template>
