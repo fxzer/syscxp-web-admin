@@ -37,9 +37,6 @@
           <h4>
             2. 粘贴到<a href="https://www.365editor.com/" target="_blank">365编辑器</a>
           </h4>
-          <el-image style="width: 200px; height: 200px" src="https://s1.ax1x.com/2023/08/17/pP117xf.png"
-            :preview-src-list="srcListCopy">
-          </el-image>
 
           <h4>
             3. 替换微信平台图片（微信公众号的图片不可外用，需要选择替换重新上传）
@@ -55,17 +52,14 @@
         <el-collapse-item title="情景三：更新文章" name="3">
           <div style="margin-left:20px;">
           <h4>
-            1. 在<a href="https://www.365editor.com/" target="_blank">365编辑器</a> 草稿箱更新文章
+            1. 在<a href="https://www.365editor.com/" target="_blank">365编辑器</a> 草稿箱修改源文章
           </h4>
-          <el-image style="width: 200px; height: 200px" src="https://s1.ax1x.com/2023/08/17/pP11TRP.jpg"
-            :preview-src-list="srcListSave">
-          </el-image>
 
           <h4>
-            2. 复制更新后的文章，粘贴到官网管理后台编辑区，发布
+            2. 复制修改好的文章，粘贴到官网管理后台编辑区，发布
           </h4>
-          <el-image style="width: 200px; height: 200px" src="https://s1.ax1x.com/2023/08/17/pP117xf.png"
-            :preview-src-list="srcListCopy">
+          <el-image style="width: 200px; height: 200px" src="https://s1.ax1x.com/2023/08/18/pP1jBJP.jpg"
+            :preview-src-list="srcListEdit">
           </el-image>
         </div>
         </el-collapse-item>
@@ -96,6 +90,9 @@ export default {
       ],
       srcListReplace:[
         'https://s1.ax1x.com/2023/08/17/pP13Deg.jpg'
+      ],
+      srcListEdit:[
+        'https://s1.ax1x.com/2023/08/18/pP1jBJP.jpg'
       ],
     };
   },
