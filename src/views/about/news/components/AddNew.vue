@@ -13,19 +13,19 @@
         </el-form-item>
         <div class="title-desc">
           <el-form-item label="标题" prop="title">
-            <el-input v-model="form.title" placeholder="请输入标题"></el-input>
+            <el-input v-model="form.title" placeholder="请输入标题" clearable></el-input>
           </el-form-item>
           <el-form-item label="描述" prop="description">
             <el-input type="textarea" v-model="form.description" :autosize="{
               minRows: 5,
-            }" show-word-limit maxlength="200" placeholder="请输入描述"></el-input>
+            }" show-word-limit maxlength="200" placeholder="请输入描述" ></el-input>
           </el-form-item>
         </div>
       </div>
 
       <el-form-item label="内容" prop="content" >
         <div class="content-wrap">
-          <el-input class="edit" type="textarea" :class="form.content ? '':'nodata'" v-model="form.content" placeholder="请输入内容"></el-input>
+          <el-input class="edit" type="textarea" :class="form.content ? '':'nodata'" v-model="form.content" clearable placeholder="请输入内容"></el-input>
           <div class="preview" :class="form.content ? '':'nodata'" v-html="form.content"></div>
         </div>
       </el-form-item>

@@ -12,9 +12,9 @@
       </el-form-item>
 
       <el-form-item label="标题" prop="title">
-        <el-input v-model="form.title" placeholder="请输入标题"></el-input>
+        <el-input v-model="form.title" placeholder="请输入标题" clearable></el-input>
       </el-form-item>
-      <el-form-item label="链接" prop="link">
+      <el-form-item label="链接" prop="link" >
         <el-select v-model="form.link" style="width: 100%;" placeholder="请选择跳转链接">
           <el-option-group v-for=" key  in linkGroupKeys" :key="key" :label="key">
              <el-option v-for="link in linkGroup[key]" :key="link.uuid" :label="link.title" :value="link.path">

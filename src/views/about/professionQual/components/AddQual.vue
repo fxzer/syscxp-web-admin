@@ -19,7 +19,7 @@
       </el-form-item>
 
       <el-form-item label="名称" prop="name">
-        <el-input v-model="form.name" placeholder="请输入名称"></el-input>
+        <el-input v-model="form.name" placeholder="请输入资质名称" clearable></el-input>
       </el-form-item>
 
     </el-form>
@@ -41,7 +41,7 @@ export default {
   data() {
     return {
       loading: false,
-      title: '新增快捷入口',
+      title: '新增专业资质',
       form: {
         type: '权威资质',
         imgSrc: '',

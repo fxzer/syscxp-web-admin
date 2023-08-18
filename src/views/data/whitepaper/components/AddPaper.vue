@@ -11,7 +11,7 @@
       </el-form-item>
 
       <el-form-item label="标题" prop="title">
-        <el-input v-model="form.title" placeholder="请输入标题"></el-input>
+        <el-input v-model="form.title" placeholder="请输入标题" clearable></el-input>
       </el-form-item>
 
       <el-form-item label="描述" prop="description">

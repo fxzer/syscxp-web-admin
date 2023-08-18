@@ -2,7 +2,7 @@
   <div class="wrapper">
     <el-form :model="form" label-width="80px" :rules="formRules" ref="form">
       <el-form-item label="标题：" prop="title">
-        <el-input v-if="isEdit" v-model="form.title" placeholder="请输入标题"></el-input>
+        <el-input v-if="isEdit" v-model="form.title" placeholder="请输入标题" clearable></el-input>
         <p v-else>{{ form.title }}</p>
       </el-form-item>
       <el-form-item label="副标题：" prop="subTitle">

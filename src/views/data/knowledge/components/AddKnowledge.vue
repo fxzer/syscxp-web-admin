@@ -11,11 +11,11 @@
 
         <div class="title-desc">
           <el-form-item label="标题" prop="title">
-            <el-input v-model="form.title" placeholder="请输入标题"></el-input>
+            <el-input v-model="form.title" placeholder="请输入标题" clearable></el-input>
           </el-form-item>
           <div style="display: flex;">
             <el-form-item label="来源" prop="source" style="flex:1;">
-              <el-input v-model="form.source" placeholder="请输入来源"></el-input>
+              <el-input v-model="form.source" placeholder="请输入来源" clearable></el-input>
             </el-form-item>
             <el-form-item label="作者" prop="writer">
               <el-input v-model="form.writer" placeholder="请输入作者"></el-input>

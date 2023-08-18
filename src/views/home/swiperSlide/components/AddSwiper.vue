@@ -22,10 +22,10 @@
         }" show-word-limit maxlength="200" placeholder="请输入描述"></el-input>
       </el-form-item>
       <el-form-item label="按钮文本" prop="btnText">
-        <el-input v-model="form.btnText" placeholder="请输入按钮文本"></el-input>
+        <el-input v-model="form.btnText" placeholder="请输入按钮文本" clearable></el-input>
       </el-form-item>
       <el-form-item label="按钮链接" prop="btnLink">
-        <el-input v-model="form.btnLink" placeholder="请输入按钮跳转链接"></el-input>
+        <el-input v-model="form.btnLink" placeholder="请输入按钮跳转链接" clearable></el-input>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
