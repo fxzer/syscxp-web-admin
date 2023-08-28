@@ -25,7 +25,18 @@
         <el-input v-model="form.btnText" placeholder="请输入按钮文本" clearable></el-input>
       </el-form-item>
       <el-form-item label="按钮链接" prop="btnLink">
-        <el-input v-model="form.btnLink" placeholder="请输入按钮跳转链接" clearable></el-input>
+        <el-select
+          v-model="form.btnLink"
+          filterable
+          allow-create
+          default-first-option
+          style="width: 100%;"
+          placeholder="请输入或选择按钮跳转链接">
+          <el-option-group v-for=" key  in linkGroupKeys" :key="key" :label="key">
+            <el-option v-for="link in linkGroup[key]" :key="link.uuid" :label="link.title" :value="link.path">
+          </el-option>
+          </el-option-group>
+          </el-select>
       </el-form-item>
 
 
@@ -39,6 +50,8 @@
 
 <script>
 import { copyObject } from '@/utils/common'
+import { querySolution } from "@/api/quickAccess";
+
 export default {
   props: {
     visible: {
@@ -60,6 +73,8 @@ export default {
         btnLink: '',
         description: '',
       },
+      linkGroup: {},
+
       imageUrl: '',
       formRules: {
         bgPath: [{ required: true, message: '请上传图片', trigger: 'blur' },],
@@ -84,6 +99,24 @@ export default {
         }
       });
     },
+    async querySolution(title) {
+      const qobj  = {
+        limit:20,
+        conditions:[]
+      }
+      if(title){
+        qobj.conditions.push({
+          name:'title',
+          op:'like',
+          value: title
+        })
+      }
+      const result = await querySolution(qobj)
+      this.linkGroup = result.success ? result.inventories.reduce((group,cur) =>{
+        group[cur.category] = group[cur.category] ? [...group[cur.category],cur] : [cur]
+        return group
+      },{}) : {}
+    },
     // 上传图片
     handleUploadSuccess(_, file) {
       this.imageUrl = URL.createObjectURL(file.raw);
@@ -102,13 +135,17 @@ export default {
     },
   },
   computed: {
+    linkGroupKeys(){
+      return Object.keys(this.linkGroup).reverse()
+    }
   },
   watch: {
     visible(val) {
       if (val) {
-        this.$nextTick(() => {
+        this.$nextTick(async () => {
           this.$refs.form.resetFields();
           this.$refs.form.clearValidate();
+          await this.querySolution()
           this.imageUrl = this.currentRow.bgPath
           copyObject(this.currentRow, this.form)
         });

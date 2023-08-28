@@ -61,7 +61,7 @@ export default {
         title: [{ required: true, message: '请输入标题', trigger: 'blur' },],
         description: [{ required: true, message: '请输入描述', trigger: 'blur' },],
       },
-      linkGroup: [],
+      linkGroup: {},
     }
   },
   methods: {
@@ -99,7 +99,7 @@ export default {
       this.linkGroup = result.success ? result.inventories.reduce((group,cur) =>{
         group[cur.category] = group[cur.category] ? [...group[cur.category],cur] : [cur]
         return group
-      },{}) : []
+      },{}) : {}
     },
 
   },

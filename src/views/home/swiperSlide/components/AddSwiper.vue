@@ -25,7 +25,18 @@
         <el-input v-model="form.btnText" placeholder="请输入按钮文本" clearable></el-input>
       </el-form-item>
       <el-form-item label="按钮链接" prop="btnLink">
-        <el-input v-model="form.btnLink" placeholder="请输入按钮跳转链接" clearable></el-input>
+        <el-select
+          v-model="form.btnLink"
+          filterable
+          allow-create
+          default-first-option
+          style="width: 100%;"
+          placeholder="请输入或选择按钮跳转链接">
+          <el-option-group v-for=" key  in linkGroupKeys" :key="key" :label="key">
+            <el-option v-for="link in linkGroup[key]" :key="link.uuid" :label="link.title" :value="link.path">
+          </el-option>
+          </el-option-group>
+          </el-select>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -36,6 +47,8 @@
 </template>
 
 <script>
+import { querySolution } from "@/api/quickAccess";
+
 export default {
   props: {
     visible: {
@@ -62,6 +75,7 @@ export default {
         btnText: [{ required: true, message: '请输入按钮跳转链接', trigger: 'blur' },],
         btnLink: [{ required: true, message: '请输入按钮文本', trigger: 'blur' },],
       },
+      linkGroup: {},
     }
   },
   methods: {
@@ -75,6 +89,25 @@ export default {
           this.$emit('done', this.form);
         }
       });
+    },
+
+    async querySolution(title) {
+      const qobj  = {
+        limit:20,
+        conditions:[]
+      }
+      if(title){
+        qobj.conditions.push({
+          name:'title',
+          op:'like',
+          value: title
+        })
+      }
+      const result = await querySolution(qobj)
+      this.linkGroup = result.success ? result.inventories.reduce((group,cur) =>{
+        group[cur.category] = group[cur.category] ? [...group[cur.category],cur] : [cur]
+        return group
+      },{}) : {}
     },
     // 上传图片
     handleUploadSuccess(_, file) {
@@ -94,12 +127,18 @@ export default {
     },
 
   },
+  computed: {
+    linkGroupKeys(){
+      return Object.keys(this.linkGroup).reverse()
+    }
+  },
   watch: {
     visible(val) {
       if (val) {
         this.$nextTick(async () => {
           this.$refs.form.resetFields();
           this.$refs.form.clearValidate();
+          await this.querySolution()
         });
       } else {
         this.imageUrl = ''
