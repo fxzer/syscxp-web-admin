@@ -61,7 +61,6 @@ export default {
       this.gridLoading = true
       const result = await queryBanner({})
       this.dataList = result.success ? result.inventories : []
-      console.log("[  this.dataList ]-46", this.dataList);
       this.gridLoading = false
     },
     /* 新增 */
@@ -70,7 +69,6 @@ export default {
       this.addVisible = true
     },
     async addDone(formData){
-      console.log("[ formData ]-71", formData);
       this.wrapperLoading = true;
       const result = await createBanner(formData);
       this.wrapperLoading = false;
@@ -94,7 +92,6 @@ export default {
       this.editVisible = true
     },
     async editDone(formData){
-      console.log("[ formData ]-94", formData);
       this.wrapperLoading = true;
       const result = await updateBanner(formData);
       this.wrapperLoading = false;
@@ -114,7 +111,6 @@ export default {
     },
     /* 删除 */
     async deleteHandler(row) {
-      console.log("[ row ]-114", row);
       this.wrapperLoading = true
       const result = await deleteBanner(row.uuid)
       this.wrapperLoading = false

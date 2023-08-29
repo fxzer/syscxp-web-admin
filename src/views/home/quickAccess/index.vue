@@ -59,7 +59,6 @@ export default {
       this.gridLoading = true
       const result = await queryQuickAccess({})
       this.dataList = result.success ? result.inventories : []
-      console.log("[  this.dataList ]-46", this.dataList);
       this.gridLoading = false
     },
     /* 新增 */

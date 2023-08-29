@@ -60,7 +60,6 @@ export default {
       this.gridLoading = true
       const result = await queryPaper({})
       this.dataList = result.success ? result.inventories : []
-      console.log("[  this.dataList ]-46", this.dataList);
       this.gridLoading = false
     },
     /* 新增 */
@@ -69,7 +68,6 @@ export default {
       this.addVisible = true
     },
     async addDone(formData){
-      console.log("[ formData ]-68", formData);
       this.wrapperLoading = true;
       const result = await createPaper(formData);
       this.wrapperLoading = false;
