@@ -48,7 +48,9 @@ export default {
         subTitle: '',
         description:''
       },
-      descList:[],
+      descList:[
+        ''
+      ],
       formRules: {
         title: [{ required: true, message: '请输入标题', trigger: 'blur' },],
         subTitle: [{ required: true, message: '请输入副标题', trigger: 'blur' },],
@@ -95,8 +97,10 @@ export default {
     async queryIntro(){
       const result = await queryIntro();
       const data  = result.success ? result.inventories[0] : {}
-      copyObject(data,this.form);
-      this.descList = JSON.parse(data.description.replace('\\"','"') || '[]');
+      if(data){
+        copyObject(data,this.form);
+        this.descList = JSON.parse(data.description.replace('\\"','"') || '[]');
+      }
     }
   },
   created() {

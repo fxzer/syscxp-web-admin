@@ -89,9 +89,10 @@ export function duration(value) {
 }
 
 
-export function copyObject(obj,target,fields=[]){
+export function copyObject(obj = {},target,fields=[]){
   if(fields || fields.length===0){
     fields = Object.keys(obj)
+    console.log("[ fields ]-95", fields);
   }
   fields.forEach(field=>{
     target[field] = obj[field]
