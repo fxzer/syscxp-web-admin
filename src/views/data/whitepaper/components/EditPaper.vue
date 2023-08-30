@@ -83,7 +83,7 @@ export default {
       this.$refs.form.validate(valid => {
         if (valid) {
           const { cover } = this.form
-          this.form.cover = cover.startsWith('http') ? cover.split('imgs/')[1] : cover
+          this.form.cover = cover.startsWith('http') ? cover.split('web_site_file/')[1] : cover
           this.$emit('done', this.form);
         }
       });

@@ -39,9 +39,9 @@
           </h4>
 
           <h4>
-            3. 替换微信平台图片（微信公众号的图片不可外用，需要选择替换重新上传）
+            3. 先上传所需的图片，删除微信平台图片，替换为新上传的图片（微信公众号的图片不可外用，需要选择替换重新上传）
           </h4>
-          <el-image style="width: 200px; height: 200px" src="https://s1.ax1x.com/2023/08/17/pP13Deg.jpg"
+          <el-image style="width: 200px; height: 200px" src="https://s1.ax1x.com/2023/08/30/pPwS3uQ.png"
             :preview-src-list="srcListReplace">
           </el-image>
           <h4>
@@ -89,7 +89,7 @@ export default {
         'https://s1.ax1x.com/2023/08/17/pP13lLD.jpg'
       ],
       srcListReplace:[
-        'https://s1.ax1x.com/2023/08/17/pP13Deg.jpg'
+        'https://s1.ax1x.com/2023/08/30/pPwS3uQ.png'
       ],
       srcListEdit:[
         'https://s1.ax1x.com/2023/08/18/pP1jBJP.jpg'

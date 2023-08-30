@@ -39,6 +39,12 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination style="text-align: center;margin: 15px;"
+        v-bind="{ ...pageOptions, ...paginationOptions }"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        hide-on-single-page
+      ></el-pagination>
     </div>
     <AddQual :visible.sync="addVisible" @done="addDone" />
     <EditQual :visible.sync="editVisible"  :currentRow="currentRow" @done="editDone"/>
@@ -61,6 +67,11 @@ export default {
       addVisible: false,
       editVisible: false,
       qualType:'全部',
+      paginationOptions: {
+        currentPage: 1,
+        pageSize: 20,
+        total: 0,
+      },
     };
   },
   methods: {
@@ -69,19 +80,33 @@ export default {
     },
     async queryList() {
       this.gridLoading = true
-      const conditions = []
+      const qobj = {
+        limit:10,
+        conditions : []
+      }
       if(this.qualType !== '全部'){
-        conditions.push({
+        qobj.conditions.push({
           name: 'type',
           op: '=',
           value: this.qualType,
         })
       }
-      const result = await queryQualification({
-        conditions
-      })
+      const { pageSize, currentPage } = this.paginationOptions;
+      qobj.limit = pageSize;
+      qobj.start = (currentPage - 1) * pageSize;
+      const result = await queryQualification(qobj)
       this.dataList = result.success ? result.inventories : []
+      this.paginationOptions.total = result.success ? result.total : 0;
+
       this.gridLoading = false
+    },
+    handleSizeChange(size) {
+      this.paginationOptions.pageSize = size;
+      this.queryList(); 
+    },
+    handleCurrentChange(current) {
+      this.paginationOptions.currentPage = current;
+      this.queryList(); 
     },
     /* 新增 */
     openAdd() {
@@ -154,6 +179,7 @@ export default {
   },
   computed: {
     ...mapState([
+      "pageOptions",
       "cellLayout",
       "headerCellLayout",
     ]),

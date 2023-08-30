@@ -92,7 +92,7 @@ export default {
       const result = await queryNews(qobj)
       const currentNew = result.success ? result.inventories[0] : {}
       copyObject(currentNew,this.form)
-      this.form.cover = currentNew.cover.startsWith('http')  ? currentNew.cover.split('imgs/')[1] : currentNew.cover  
+      this.form.cover = currentNew.cover.startsWith('http')  ? currentNew.cover.split('web_site_file/')[1] : currentNew.cover  
       this.imageUrl = currentNew.cover
       this.wrapperLoading = false
     },
