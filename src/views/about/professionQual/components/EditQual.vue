@@ -42,6 +42,7 @@ export default {
       default:()=>({})
     }
   },
+  inject: ['backendFileBasePath'],
   data() {
     return {
       title: '修改专业资质',
@@ -68,7 +69,7 @@ export default {
       this.$refs.form.validate(valid => {
         if (valid) {
           const { imgSrc } = this.form
-          this.form.imgSrc =  imgSrc.startsWith('http')  ? imgSrc.split('web_site_file/')[1] : imgSrc
+          this.form.imgSrc =  imgSrc.startsWith('http')  ? imgSrc.split(this.backendFileBasePath)[1] : imgSrc
           this.$emit('done', this.form);
         }
       });

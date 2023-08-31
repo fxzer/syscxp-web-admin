@@ -63,6 +63,8 @@ export default {
       default: () => ({})
     }
   },
+  inject: ['backendFileBasePath'],
+
   data() {
     return {
       title: '修改首页轮播图',
@@ -94,7 +96,7 @@ export default {
       this.$refs.form.validate(valid => {
         if (valid) {
           const { bgPath } = this.form
-          this.form.bgPath = bgPath.startsWith('http') ? bgPath.split('web_site_file/')[1] : bgPath
+          this.form.bgPath = bgPath.startsWith('http') ? bgPath.split(this.backendFileBasePath)[1] : bgPath
           this.$emit('done', this.form);
         }
       });

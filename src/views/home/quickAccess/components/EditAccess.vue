@@ -50,6 +50,8 @@ export default {
       default:()=>({})
     }
   },
+  inject: ['backendFileBasePath'],
+
   data() {
     return {
       title: '修改快捷入口',
@@ -79,7 +81,7 @@ export default {
         if (valid) {
           //判断 icon 属性 可能是'http://192.168.211.63:8130/imgs/access/xxx.png' 或者 'access/xxx.png',传给后端的是后者
           const { icon } = this.form
-          this.form.icon =  icon.startsWith('http')  ? icon.split('web_site_file/')[1] : icon
+          this.form.icon =  icon.startsWith('http')  ? icon.split(this.backendFileBasePath)[1] : icon
           this.$emit('done', this.form);
         }
       });

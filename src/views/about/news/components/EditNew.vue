@@ -57,6 +57,7 @@ export default {
   components:{
     EditorHelp: () => import('@/views/EditorHelp.vue')
   },
+  inject: ['backendFileBasePath'],
   data() {
     return {
       helpVisible: false,
@@ -92,7 +93,7 @@ export default {
       const result = await queryNews(qobj)
       const currentNew = result.success ? result.inventories[0] : {}
       copyObject(currentNew,this.form)
-      this.form.cover = currentNew.cover.startsWith('http')  ? currentNew.cover.split('web_site_file/')[1] : currentNew.cover  
+      this.form.cover = currentNew.cover.startsWith('http')  ? currentNew.cover.split(this.backendFileBasePath)[1] : currentNew.cover  
       this.imageUrl = currentNew.cover
       this.wrapperLoading = false
     },

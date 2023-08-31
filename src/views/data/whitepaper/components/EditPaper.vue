@@ -55,6 +55,7 @@ export default {
       default: () => ({})
     }
   },
+  inject: ['backendFileBasePath'],
   data() {
     return {
       title: '修改白皮书',
@@ -83,8 +84,8 @@ export default {
       this.$refs.form.validate(valid => {
         if (valid) {
           const { cover,fileLink } = this.form
-          this.form.cover = cover.startsWith('http') ? cover.split('web_site_file/')[1] : cover
-          this.form.fileLink =  fileLink.startsWith('http') ? fileLink.split('web_site_file/')[1] : fileLink
+          this.form.cover = cover.startsWith('http') ? cover.split(this.backendFileBasePath)[1] : cover
+          this.form.fileLink =  fileLink.startsWith('http') ? fileLink.split(this.backendFileBasePath)[1] : fileLink
           this.$emit('done', this.form);
         }
       });

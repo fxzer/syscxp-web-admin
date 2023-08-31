@@ -26,11 +26,15 @@ import LeftNav from "@/views/LeftNav.vue";
 import Cookies from "js-cookie";
 import { mapMutations, mapState } from "vuex";
 export default {
-  // name: "App",
+  name: "App",
   components: {
     TopHeader,
     LeftNav,
   },
+  provide:{
+    backendFileBasePath:'web_site_file/'
+  },
+  
   data() {
     return {
       isLogin: false,
