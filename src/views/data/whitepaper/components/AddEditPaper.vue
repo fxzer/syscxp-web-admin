@@ -39,17 +39,24 @@
 </template>
 
 <script>
+import { copyObject } from '@/utils/common'
+
 export default {
   props: {
     visible: {
       type: Boolean,
       default: false,
     },
+    currentRow: {
+      type: Object,
+      default: () => ({})
+    }
   },
+  inject: ['backendFileBasePath'],
   data() {
     return {
       loading: false,
-      title: '新增白皮书',
+      isEditMode: false,
       form: {
         cover: '',
         title: '',
@@ -66,6 +73,11 @@ export default {
       fileList: []
     }
   },
+  computed:{
+    title(){
+      return this.currentRow.uuid ? '修改白皮书' : '新增白皮书'
+    }
+  },
   methods: {
     close() {
       this.$emit('update:visible', false);
@@ -74,7 +86,12 @@ export default {
     confirm() {
       this.$refs.form.validate(valid => {
         if (valid) {
-          this.$emit('done', this.form);
+          if(this.isEditMode){
+            const { cover,fileLink } = this.form
+            this.form.cover = cover.startsWith('http') ? cover.split(this.backendFileBasePath)[1] : cover
+            this.form.fileLink =  fileLink.startsWith('http') ? fileLink.split(this.backendFileBasePath)[1] : fileLink
+          }
+          this.$emit('done', this.form,this.isEditMode);
         }
       });
     },
@@ -121,15 +138,23 @@ export default {
     }
 
   },
-  computed: {
-
-  },
   watch: {
     visible(val) {
       if (val) {
         this.$nextTick(async () => {
           this.$refs.form.resetFields();
           this.$refs.form.clearValidate();
+          if(this.currentRow.uuid){
+            this.isEditMode = true
+            this.imageUrl = this.currentRow.cover;
+            this.fileList = this.currentRow.fileLink ? [{
+            name: this.currentRow.fileLink.split('/').pop(),
+            url: this.currentRow.fileLink,
+          }] : [];
+          copyObject(this.currentRow, this.form)
+          }else{
+            this.isEditMode = false
+          }
         });
       } else {
         this.imageUrl = ''

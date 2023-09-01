@@ -48,6 +48,7 @@
 
 <script>
 import { querySolution } from "@/api/quickAccess";
+import { copyObject } from '@/utils/common'
 
 export default {
   props: {
@@ -55,11 +56,15 @@ export default {
       type: Boolean,
       default: false,
     },
+    currentRow: {
+      type: Object,
+      default: () => ({})
+    }
   },
   data() {
     return {
       loading: false,
-      title: '新增首页轮播图',
+      isEditMode: false,
       form: {
         title: '',
         bgPath: '',
@@ -86,11 +91,14 @@ export default {
     confirm() {
       this.$refs.form.validate(valid => {
         if (valid) {
-          this.$emit('done', this.form);
+          if(this.isEditMode){
+            const { bgPath } = this.form
+           this.form.bgPath = bgPath.startsWith('http') ? bgPath.split(this.backendFileBasePath)[1] : bgPath
+          }
+          this.$emit('done', this.form, this.isEditMode);
         }
       });
     },
-
     async querySolution(title) {
       const qobj  = {
         limit:20,
@@ -130,6 +138,9 @@ export default {
   computed: {
     linkGroupKeys(){
       return Object.keys(this.linkGroup).reverse()
+    },
+    title(){
+      return this.currentRow.uuid ? '编辑首页轮播图' : '新增首页轮播图'
     }
   },
   watch: {
@@ -139,6 +150,13 @@ export default {
           this.$refs.form.resetFields();
           this.$refs.form.clearValidate();
           await this.querySolution()
+          if(this.currentRow.uuid){
+            this.isEditMode = true
+            this.imageUrl = this.currentRow.bgPath
+           copyObject(this.currentRow, this.form) 
+          }else{
+            this.isEditMode = false
+          }
         });
       } else {
         this.imageUrl = ''

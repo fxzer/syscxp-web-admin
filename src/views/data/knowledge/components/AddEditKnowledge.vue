@@ -27,13 +27,16 @@
             <el-form-item label="来源" prop="source" style="flex:1;margin-right:10px;">
               <el-input v-model="form.source" placeholder="请输入来源" clearable></el-input>
             </el-form-item>
+            <el-form-item label="关键词" prop="keywords" style="flex:1;margin-right:10px;">
+              <el-input v-model="form.keywords" placeholder="请输入关键词" clearable></el-input>
+            </el-form-item>
             <el-form-item label="作者" prop="writer">
               <el-input v-model="form.writer" placeholder="请输入作者"></el-input>
             </el-form-item>
           </div>
           <el-form-item label="描述" prop="description">
             <el-input type="textarea" v-model="form.description" :autosize="{
-              minRows: 4,
+              minRows: 3,
             }" show-word-limit maxlength="200" placeholder="请输入描述"></el-input>
           </el-form-item>
         </div>
@@ -64,22 +67,25 @@
 </template>
 
 <script>
+import { copyObject } from '@/utils/common'
 
-/*  */
-import { createKnowledge } from "@/api/knowledge";
+import { createKnowledge, updateKnowledge,queryKnowledge } from "@/api/knowledge";
 export default {
   components:{
     EditorHelp: () => import('@/views/EditorHelp.vue')
   },
+  inject: ['formateDate'],
   data() {
     return {
       helpVisible: false,
+      isEditMode: false,
       wrapperLoading: false,
       form: {
         title: "",
         source: "",
         writer: "",
         content: "",
+        keywords:"",
         description: "",
         releaseDate: '',
       },
@@ -88,6 +94,7 @@ export default {
         source: [{ required: true, message: '请输入来源', trigger: 'blur' },],
         writer: [{ required: true, message: '请输入作者', trigger: 'blur' },],
         description: [{ required: true, message: '请输入描述', trigger: 'blur' },],
+        keywords: [{ required: true, message: '请输入关键词', trigger: 'blur' },],
         content: [{ required: true, message: '请输入内容', trigger: 'blur' },],
         releaseDate: [{ required: true, message: '请选择发布日期', trigger: 'blur' },],
       },
@@ -100,25 +107,37 @@ export default {
     }
   },
   methods: {
-    handleChange(val) {
-      this.form.content = val
+    async queryCurrentKnowledge() {
+      this.wrapperLoading = true
+      const qobj = {
+        conditions:[ {
+            name:'uuid',
+            op:'=',
+            value:this.$route.query.uuid } ]  }
+      const result = await queryKnowledge(qobj)
+      const currentNew = result.success ? result.inventories[0] : {}
+      copyObject(currentNew,this.form)
+      this.form.releaseDate  = new Date(currentNew.releaseDate).getTime()
+      this.wrapperLoading = false
     },
     onSubmit() {
       this.$refs.form.validate(async (valid) => {
         if (valid) {
           this.wrapperLoading = true;
-          const result = await createKnowledge(this.form);
+        this.form.releaseDate = this.formateDate(this.form.releaseDate)
+        const fn = this.isEditMode ? updateKnowledge : createKnowledge
+          const result = await fn(this.form);
           this.wrapperLoading = false;
           if (result.success) {
             this.$notify({
               type: "success",
-              message: `新增成功`,
+              message: `${this.isEditMode ? '修改': '新增'}成功`,
             });
             this.$router.replace("/knowledge")
           } else {
             this.$notify({
               type: "error",
-              message: `新增失败`,
+              message: `${this.isEditMode ? '修改': '新增'}失败`,
             });
           }
         } else {
@@ -131,6 +150,14 @@ export default {
     },
 
   },
+  mounted(){
+    if(this.$route.query.uuid){
+      this.isEditMode = true
+      this.queryCurrentKnowledge()
+    }else{
+      this.isEditMode = false
+    }
+  }
 };
 </script>
 

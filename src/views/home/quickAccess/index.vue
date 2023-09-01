@@ -2,7 +2,7 @@
   <div v-loading.fullscreen.lock="wrapperLoading" element-loading-text="拼命加载中"
     element-loading-background="rgba(0, 0, 0, 0.5)">
     <div class="opt-group">
-      <el-button type="primary" size="small" @click="openAdd">新增</el-button>
+      <el-button type="primary" size="small" @click="openAddOrEdit({})">新增</el-button>
 
     </div>
     <div class="grid-wrapper">
@@ -24,7 +24,7 @@
 
         <el-table-column label="操作" width="200" fixed="right">
           <template slot-scope="{ row }">
-            <el-button type="primary" size="mini" style="margin-right:10px;" @click="openEdit(row)">修改</el-button>
+            <el-button type="primary" size="mini" style="margin-right:10px;" @click="openAddOrEdit(row)">修改</el-button>
             <el-popconfirm title="确定删除吗？" @confirm="deleteHandler(row)">
               <el-button type="danger" size="mini" slot="reference">删除</el-button>
             </el-popconfirm>
@@ -32,8 +32,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <AddAccess :visible.sync="addVisible" @done="addDone" />
-    <EditAccess :visible.sync="editVisible"  :currentRow="currentRow" @done="editDone"/>
+    <AddEditAccess :visible.sync="addEditVisible"  :currentRow="currentRow" @done="addEditDone"/>
   </div>
 </template>
 
@@ -50,8 +49,7 @@ export default {
       currentRow: {},
       wrapperLoading: false,
       gridLoading: false,
-      addVisible: false,
-      editVisible: false,
+      addEditVisible: false,
     };
   },
   methods: {
@@ -61,49 +59,26 @@ export default {
       this.dataList = result.success ? result.inventories : []
       this.gridLoading = false
     },
-    /* 新增 */
-    openAdd() {
-      this.currentRow = {}
-      this.addVisible = true
-    },
-    async addDone(formData){
-      this.wrapperLoading = true;
-      const result = await createQuickAccess(formData);
-      this.wrapperLoading = false;
-      if (result.success) {
-        this.$notify({
-          type: "success",
-          message: `新增成功`,
-        });
-        this.addVisible = false;
-        this.queryList();
-      } else {
-        this.$notify({
-          type: "error",
-          message: `新增失败`,
-        });
-      }
-    },
-    /* 修改 */
-    openEdit(row) {
+    openAddOrEdit(row){
       this.currentRow = row
-      this.editVisible = true
+      this.addEditVisible = true
     },
-    async editDone(formData){
+    async addEditDone(formData,isEdit){
       this.wrapperLoading = true;
-      const result = await updateQuickAccess(formData);
+      const fn = isEdit ? updateQuickAccess : createQuickAccess
+      const result = await fn(formData);
       this.wrapperLoading = false;
       if (result.success) {
         this.$notify({
           type: "success",
-          message: `修改成功`,
+          message: `${isEdit?'修改':'添加'}新增成功`,
         });
-        this.editVisible = false;
+        this.addEditVisible = false;
         this.queryList();
       } else {
         this.$notify({
           type: "error",
-          message: `修改失败`,
+          message: `${isEdit?'修改':'添加'}新增失败`,
         });
       }
     },
@@ -128,8 +103,7 @@ export default {
     
   },
   components: {
-    AddAccess: () => import('./components/AddAccess.vue'),
-    EditAccess: () => import('./components/EditAccess.vue'),
+    AddEditAccess: () => import('./components/AddEditAccess.vue'),
   },
   computed: {
     ...mapState([

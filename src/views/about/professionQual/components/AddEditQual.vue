@@ -23,14 +23,15 @@
 
     </el-form>
     <span slot="footer" class="dialog-footer">
-      <el-button size="small" @click="close">取 消</el-button>
-      <el-button size="small" type="primary" @click="confirm">确 定</el-button>
+      <el-button size="medium" @click="close">取 消</el-button>
+      <el-button size="medium" type="primary" @click="confirm">确 定</el-button>
     </span>
   </el-dialog>
 </template>
 
 <script>
 import { copyObject } from '@/utils/common'
+
 export default {
   props: {
     visible: {
@@ -45,7 +46,8 @@ export default {
   inject: ['backendFileBasePath'],
   data() {
     return {
-      title: '修改专业资质',
+      loading: false,
+      isEditMode: false,
       form: {
         type: '权威资质',
         imgSrc: '',
@@ -60,6 +62,11 @@ export default {
       linkGroup: [],
     }
   },
+  computed:{
+    title(){
+      return this.currentRow.uuid ? '修改专业资质' : '新增专业资质'
+    }
+  },
   methods: {
     close() {
       this.$emit('update:visible', false);
@@ -68,9 +75,11 @@ export default {
     confirm() {
       this.$refs.form.validate(valid => {
         if (valid) {
-          const { imgSrc } = this.form
-          this.form.imgSrc =  imgSrc.startsWith('http')  ? imgSrc.split(this.backendFileBasePath)[1] : imgSrc
-          this.$emit('done', this.form);
+          if(this.isEditMode){
+            const { imgSrc } = this.form
+            this.form.imgSrc =  imgSrc.startsWith('http')  ? imgSrc.split(this.backendFileBasePath)[1] : imgSrc
+          }
+          this.$emit('done', this.form, this.isEditMode);
         }
       });
     },
@@ -80,7 +89,7 @@ export default {
       this.form.imgSrc = 'qualification/' + file.name
     },
     handleBeforeUpload(file) {
-      const isEnableType  = ['image/jpeg', 'image/png', 'image/jpg', 'image/svg+xml'].includes(file.type);
+      const isEnableType = ['image/jpeg', 'image/png', 'image/jpg', 'image/svg+xml'].includes(file.type);
       const isLt2M = file.size / 1024 / 1024 < 2;
       if (!isEnableType) {
         this.$message.error('上传图片只能是 【JPG、JPEG、PNG、SVG】格式!');
@@ -90,17 +99,23 @@ export default {
       }
       return isLt2M;
     },
+
   },
   watch: {
-     visible(val) {
+    visible(val) {
       if (val) {
-        this.$nextTick( () => {
+        this.$nextTick(async () => {
           this.$refs.form.resetFields();
           this.$refs.form.clearValidate();
-          this.imageUrl = this.currentRow.imgSrc
-         copyObject(this.currentRow,this.form )
+          if(this.currentRow.uuid){
+            this.isEditMode = true
+            this.imageUrl = this.currentRow.imgSrc
+            copyObject(this.currentRow,this.form )
+          }else{
+            this.isEditMode = false
+          }
         });
-      }else{
+      } else {
         this.imageUrl = ''
       }
     }

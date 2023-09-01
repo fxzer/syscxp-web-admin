@@ -20,14 +20,16 @@
               <el-date-picker
                 v-model="form.releaseDate"
                 type="date"
-                value-format="timestamp"
                 placeholder="选择发布日期">
               </el-date-picker>
             </el-form-item>
           </div>
+          <el-form-item label="关键词" prop="keywords" >
+              <el-input v-model="form.keywords" placeholder="请输入关键词" clearable></el-input>
+            </el-form-item>
           <el-form-item label="描述" prop="description">
             <el-input type="textarea" v-model="form.description" :autosize="{
-              minRows: 5,
+              minRows: 3,
             }" show-word-limit maxlength="200" placeholder="请输入描述" ></el-input>
           </el-form-item>
         </div>
@@ -56,18 +58,23 @@
 </template>
 
 <script>
-import { createNews } from "@/api/news";
+import { copyObject } from '@/utils/common'
+
+import { createNews ,updateNews,queryNews } from "@/api/news";
 export default {
   props: {
 
   },
+  inject: ['backendFileBasePath','formateDate'],
   data() {
     return {
       helpVisible: false,
+      isEditMode: false, // 编辑模式
       wrapperLoading: false,
       form: {
         cover: "",
         title: "",
+        keywords: "",
         content: "",
         releaseDate: '',
         description: "",
@@ -76,6 +83,7 @@ export default {
       formRules: {
         cover: [{ required: true, message: '请上传图片', trigger: 'blur' },],
         title: [{ required: true, message: '请输入标题', trigger: 'blur' },],
+        keywords: [{ required: true, message: '请输入关键词', trigger: 'blur' },],
         description: [{ required: true, message: '请输入描述', trigger: 'blur' },],
         releaseDate: [{ required: true, message: '请选择发布日期', trigger: 'blur' },],
         content: [{ required: true, message: '请输入内容', trigger: 'blur' },],
@@ -104,22 +112,44 @@ export default {
     handleChange(val) {
       this.form.content = val
     },
+    //查询
+    async queryCurrentNew() {
+      this.wrapperLoading = true
+      const qobj = {
+        conditions:[
+          {
+            name:'uuid',
+            op:'=',
+            value:this.$route.query.uuid,
+          }
+        ]
+      }
+      const result = await queryNews(qobj)
+      const currentNew = result.success ? result.inventories[0] : {}
+      copyObject(currentNew,this.form)
+      this.form.releaseDate  = new Date(currentNew.releaseDate).getTime()
+      this.form.cover = currentNew.cover.startsWith('http')  ? currentNew.cover.split(this.backendFileBasePath)[1] : currentNew.cover  
+      this.imageUrl = currentNew.cover
+      this.wrapperLoading = false
+    },
     onSubmit() {
       this.$refs.form.validate(async (valid) => {
         if (valid) {
           this.wrapperLoading = true;
-          const result = await createNews(this.form);
+          this.form.releaseDate = this.formateDate(this.form.releaseDate)
+          const fn = this.isEditMode ? updateNews : createNews
+          const result = await fn(this.form);
           this.wrapperLoading = false;
           if (result.success) {
             this.$notify({
               type: "success",
-              message: `新增成功`,
+              message: `${this.isEditMode ? '修改': '新增'}成功`,
             });
             this.$router.replace("/news")
           } else {
             this.$notify({
               type: "error",
-              message: `新增失败`,
+              message: `${this.isEditMode ? '修改': '新增'}失败`,
             });
           }
         } else {
@@ -131,6 +161,16 @@ export default {
       this.$router.replace("/news")
     }
   },
+  mounted(){
+    if(this.$route.query.uuid){
+      this.isEditMode = true
+      this.queryCurrentNew()
+      document.title = '修改新闻'
+    }else{
+      this.isEditMode = false
+      document.title = '添加新闻'
+    }
+  }
 };
 </script>
 

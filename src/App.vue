@@ -32,7 +32,11 @@ export default {
     LeftNav,
   },
   provide:{
-    backendFileBasePath:'web_site_file/'
+    backendFileBasePath:'web_site_file/',
+    formateDate(timestamp) {
+      const options = { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true };
+      return  new Intl.DateTimeFormat('en-US', options).format(new Date(timestamp)).replace('at','');
+    },
   },
   
   data() {

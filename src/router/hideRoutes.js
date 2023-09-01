@@ -8,36 +8,19 @@ export default [
     },
   },
   {
-    name: "AddNew",
-    path: "/news/add",
-    component: () => import("@/views/about/news/components/AddNew.vue"),
+    name: "AddEditNew",
+    path: "/news/add_edit",
+    component: () => import("@/views/about/news/components/AddEditNew.vue"),
     meta: {
       title: "添加新闻",
     },
   },
   {
-    name: "EditNew",
-    path: "/news/edit",
-    component: () => import("@/views/about/news/components/EditNew.vue"),
-    meta: {
-      title: "修改新闻",
-    },
-  },
-  {
-    name: "AddKnowledge",
-    path: "/knowledge/add",
-    component: () => import("@/views/data/knowledge/components/AddKnowledge.vue"),
+    name: "AddEditKnowledge",
+    path: "/knowledge/add_edit",
+    component: () => import("@/views/data/knowledge/components/AddEditKnowledge.vue"),
     meta: {
       title: "添加知识",  
     },
   },
-  {
-    name: "EditKnowledge",
-    path: "/knowledge/edit",
-    component: () => import("@/views/data/knowledge/components/EditKnowledge.vue"),
-    meta: {
-      title: "修改知识",
-    },
-  },
-
 ];

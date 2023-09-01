@@ -36,6 +36,7 @@
 </template>
 
 <script>
+import { copyObject } from '@/utils/common'
 import { querySolution } from "@/api/quickAccess";
 export default {
   props: {
@@ -43,11 +44,15 @@ export default {
       type: Boolean,
       default: false,
     },
+    currentRow:{
+      type:Object,
+      default:()=>({})
+    }
   },
   data() {
     return {
+      isEditMode: false,
       loading: false,
-      title: '新增快捷入口',
       form: {
         icon: '',
         link: '',
@@ -72,7 +77,7 @@ export default {
     confirm() {
       this.$refs.form.validate(valid => {
         if (valid) {
-          this.$emit('done', this.form);
+          this.$emit('done', this.form, this.isEditMode);
         }
       });
     },
@@ -106,6 +111,9 @@ export default {
   computed: {
     linkGroupKeys(){
       return Object.keys(this.linkGroup).reverse()
+    },
+    title(){
+      return this.currentRow.uuid ? '修改快捷入口' : '新增快捷入口'
     }
   },
   watch: {
@@ -115,6 +123,13 @@ export default {
           this.$refs.form.resetFields();
           this.$refs.form.clearValidate();
           await this.querySolution()
+          if(this.currentRow.uuid){
+            copyObject(this.currentRow,this.form )
+            this.imageUrl = this.currentRow.icon
+            this.isEditMode = true
+          }else{
+            this.isEditMode = false
+          }
         });
       }else{
         this.imageUrl = ''

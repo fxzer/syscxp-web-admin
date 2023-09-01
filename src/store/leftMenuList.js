@@ -51,7 +51,7 @@ export default [
       },
       {
         name: "news",
-        label: "新闻资讯",
+        label: "新闻媒体",
         path: "/news",
         iconClass: "iconfont icon-database",
         componentPath: "views/about/news/index.vue",
