@@ -14,6 +14,11 @@
         </el-table-column>
         <el-table-column prop="title" label="标题"></el-table-column>
         <el-table-column prop="description" label="描述"></el-table-column>
+        <el-table-column prop="releaseDate" label="发布日期" width="150">
+          <template slot-scope='{row}'>
+            {{ row.releaseDate | date('yyyy-MM-dd') }}
+          </template>
+        </el-table-column>
         <el-table-column prop="createDate" label="更新时间" width="160">
           <template slot-scope='{row}'>
             {{ row.createDate | date }}

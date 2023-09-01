@@ -1,19 +1,30 @@
 <template>
   <div class="wrapper" v-loading.fullscreen.lock="wrapperLoading" element-loading-text="拼命加载中"
     element-loading-background="rgba(0, 0, 0, 0.5)">
-    <el-form :model="form" ref="form" :rules="formRules" label-width="60px">
+    <el-form :model="form" ref="form" :rules="formRules" label-width="80px">
       <div class="new-item">
         <el-form-item label="封面"   style="margin-right:20px;">
           <div class="cover-bg">
             <p class="cover-text">{{ previewTitle }}</p>
           </div>
         </el-form-item>
-        <div class="title-desc">
-          <el-form-item label="标题" prop="title">
-          <el-input v-model="form.title" placeholder="请输入标题" clearable></el-input>
-        </el-form-item>
+        <div style="width: 100%;">
+          <div style="display: flex">
+            <el-form-item label="标题" prop="title" style="flex:1;margin-right:10px;">
+              <el-input v-model="form.title" placeholder="请输入标题" clearable></el-input>
+            </el-form-item>
+            <el-form-item label="发布日期"  prop="releaseDate">
+              <el-date-picker
+                v-model="form.releaseDate"
+                type="date"
+                style="width: 183px;"
+                value-format="timestamp"
+                placeholder="选择发布日期">
+              </el-date-picker>
+            </el-form-item>
+          </div>
           <div style="display: flex;">
-            <el-form-item label="来源" prop="source" style="flex:1;">
+            <el-form-item label="来源" prop="source" style="flex:1;margin-right:10px;">
               <el-input v-model="form.source" placeholder="请输入来源" clearable></el-input>
             </el-form-item>
             <el-form-item label="作者" prop="writer">
@@ -71,6 +82,8 @@ export default {
         writer: "",
         content: "",
         description: "",
+        releaseDate: '',
+
       },
       formRules: {
         title: [{ required: true, message: '请输入标题', trigger: 'blur' },],
@@ -78,6 +91,8 @@ export default {
         writer: [{ required: true, message: '请输入作者', trigger: 'blur' },],
         description: [{ required: true, message: '请输入描述', trigger: 'blur' },],
         content: [{ required: true, message: '请输入内容', trigger: 'blur' },],
+        releaseDate: [{ required: true, message: '请选择发布日期', trigger: 'blur' },],
+
       },
     };
   },
@@ -146,10 +161,6 @@ export default {
 <style scoped lang="scss">
 .new-item {
   display: flex;
-
-  .title-desc {
-    width: 100%;
-  }
 
 
 }

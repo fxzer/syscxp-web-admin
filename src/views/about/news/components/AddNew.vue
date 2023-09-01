@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper" v-loading.fullscreen.lock="wrapperLoading" element-loading-text="拼命加载中"
     element-loading-background="rgba(0, 0, 0, 0.5)">
-    <el-form :model="form" ref="form" :rules="formRules" label-width="60px">
+    <el-form :model="form" ref="form" :rules="formRules" label-width="80px">
       <div class="new-item">
         <el-form-item label="封面" prop="cover">
           <el-upload class="cover" drag action="/website/api/uploadfile" :data="{
@@ -11,10 +11,20 @@
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
-        <div class="title-desc">
-          <el-form-item label="标题" prop="title">
-            <el-input v-model="form.title" placeholder="请输入标题" clearable></el-input>
-          </el-form-item>
+        <div style="width: 100%;">
+          <div style="display: flex">
+            <el-form-item label="标题" prop="title" style="flex:1;margin-right:10px;">
+              <el-input v-model="form.title" placeholder="请输入标题" clearable></el-input>
+            </el-form-item>
+            <el-form-item label="发布日期"  prop="releaseDate">
+              <el-date-picker
+                v-model="form.releaseDate"
+                type="date"
+                value-format="timestamp"
+                placeholder="选择发布日期">
+              </el-date-picker>
+            </el-form-item>
+          </div>
           <el-form-item label="描述" prop="description">
             <el-input type="textarea" v-model="form.description" :autosize="{
               minRows: 5,
@@ -59,6 +69,7 @@ export default {
         cover: "",
         title: "",
         content: "",
+        releaseDate: '',
         description: "",
       },
       imageUrl: '',
@@ -66,6 +77,7 @@ export default {
         cover: [{ required: true, message: '请上传图片', trigger: 'blur' },],
         title: [{ required: true, message: '请输入标题', trigger: 'blur' },],
         description: [{ required: true, message: '请输入描述', trigger: 'blur' },],
+        releaseDate: [{ required: true, message: '请选择发布日期', trigger: 'blur' },],
         content: [{ required: true, message: '请输入内容', trigger: 'blur' },],
       },
     };
@@ -125,12 +137,6 @@ export default {
 <style scoped lang="scss">
 .new-item {
   display: flex;
-
-  .title-desc {
-    width: 100%;
-  }
-
-
 }
 
 .content-wrap {
