@@ -74,7 +74,6 @@ export default {
   components:{
     EditorHelp: () => import('@/views/EditorHelp.vue')
   },
-  inject: ['formateDate'],
   data() {
     return {
       helpVisible: false,
@@ -124,7 +123,6 @@ export default {
       this.$refs.form.validate(async (valid) => {
         if (valid) {
           this.wrapperLoading = true;
-        this.form.releaseDate = this.formateDate(this.form.releaseDate)
         const fn = this.isEditMode ? updateKnowledge : createKnowledge
           const result = await fn(this.form);
           this.wrapperLoading = false;

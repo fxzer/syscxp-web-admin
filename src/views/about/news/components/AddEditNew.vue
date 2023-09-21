@@ -20,6 +20,7 @@
               <el-date-picker
                 v-model="form.releaseDate"
                 type="date"
+                value-format="timestamp"
                 placeholder="选择发布日期">
               </el-date-picker>
             </el-form-item>
@@ -65,7 +66,7 @@ export default {
   props: {
 
   },
-  inject: ['backendFileBasePath','formateDate'],
+  inject: ['backendFileBasePath',],
   data() {
     return {
       helpVisible: false,
@@ -136,7 +137,6 @@ export default {
       this.$refs.form.validate(async (valid) => {
         if (valid) {
           this.wrapperLoading = true;
-          this.form.releaseDate = this.formateDate(this.form.releaseDate)
           const fn = this.isEditMode ? updateNews : createNews
           const result = await fn(this.form);
           this.wrapperLoading = false;
