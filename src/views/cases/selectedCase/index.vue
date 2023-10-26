@@ -2,7 +2,7 @@
   <div v-loading.fullscreen.lock="wrapperLoading" element-loading-text="拼命加载中"
     element-loading-background="rgba(0, 0, 0, 0.5)">
     <div class="opt-group">
-      <el-button type="primary" size="small" @click="goAddOrEdit">添加新闻</el-button>
+      <el-button type="primary" size="small" @click="goAddOrEdit">添加精选案例</el-button>
     </div>
     <div class="grid-wrapper">
       <el-table v-loading="gridLoading" :data="dataList" stripe class="width-percent-100"
@@ -14,6 +14,11 @@
         </el-table-column>
         <el-table-column prop="title" label="标题"></el-table-column>
         <el-table-column prop="keywords" label="关键词"></el-table-column>
+        <el-table-column prop="products" label="使用产品">
+          <template slot-scope='{row}'>
+             <el-tag v-for="(prod,index) in row.products" :key="index" size="small">{{ prod.name }}</el-tag> 
+          </template>
+        </el-table-column>
 
         <el-table-column prop="description" label="描述"></el-table-column>
         <el-table-column prop="releaseDate" label="发布日期" width="120">
@@ -48,7 +53,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import { queryNews, deleteNews } from "@/api/news";
+import { queryCases, deleteCases } from "@/api/cases";
 export default {
   props: {
 
@@ -69,14 +74,24 @@ export default {
   methods: {
     async queryList() {
       this.gridLoading = true
-      const qobj = { sortBy:'releaseDate',  fields: ['uuid', 'cover', 'title', 'keywords','description', 'createDate', 'releaseDate'], }
+      const qobj = { sortBy:'releaseDate' ,  fields: ['uuid', 'cover', 'title','keywords', 'products','description', 'createDate', 'releaseDate'],}
       const { pageSize, currentPage } = this.paginationOptions;
       qobj.limit = pageSize;
       qobj.start = (currentPage - 1) * pageSize;
-      const result = await queryNews(qobj)
-      this.dataList = result.success ? result.inventories : []
+      const result = await queryCases(qobj)
+      this.dataList = result.success ? result.inventories.map(item =>  ({...item, products:this.parseProd(item.products)})) : []
+     
       this.paginationOptions.total = result.success ? result.total : 0;
       this.gridLoading = false
+    },
+    parseProd(prodStr) {
+      let prodArr = []
+      try{
+        prodArr = JSON.parse(prodStr)
+      }catch{
+        prodArr = []
+      }
+      return prodArr
     },
     handleSizeChange(size) {
       this.paginationOptions.pageSize = size;
@@ -89,14 +104,14 @@ export default {
     goAddOrEdit(row,isEdit) {
       //另外重新开标签页
     this.$router.push({
-        name: "AddEditNew",
+        name: "AddEditCase",
         query: isEdit ? { uuid: row.uuid } : {},
       })
     },
     /* 删除 */
     async deleteHandler(row) {
       this.wrapperLoading = true
-      const result = await deleteNews(row.uuid)
+      const result = await deleteCases(row.uuid)
       this.wrapperLoading = false
       if (result.success) {
         this.$notify({
@@ -133,6 +148,9 @@ export default {
   height: 60px;
   border: 1px solid #ddd;
   border-radius: 4px;
+}
+.el-tag+.el-tag {
+  margin-left: 5px;
 }
 </style>
 

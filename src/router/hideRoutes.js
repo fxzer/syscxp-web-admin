@@ -16,6 +16,14 @@ export default [
     },
   },
   {
+    name: "AddEditCase",
+    path: "/cases/add_edit",
+    component: () => import("@/views/cases/selectedCase/components/AddEditCase.vue"),
+    meta: {
+      title: "添加精选案例",
+    },
+  },
+  {
     name: "AddEditKnowledge",
     path: "/knowledge/add_edit",
     component: () => import("@/views/data/knowledge/components/AddEditKnowledge.vue"),

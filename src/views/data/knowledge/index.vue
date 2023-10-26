@@ -66,7 +66,7 @@ export default {
   methods: {
     async queryList() {
       this.gridLoading = true
-      const qobj = { sortBy:'releaseDate', }
+      const qobj = { sortBy:'releaseDate',  fields: ['uuid','writer', 'title','description', 'createDate', 'releaseDate','keywords','source','counts'],}
       const { pageSize, currentPage } = this.paginationOptions;
       qobj.limit = pageSize;
       qobj.start = (currentPage - 1) * pageSize;

@@ -21,6 +21,46 @@ export default [
       },
     ]
   },
+ 
+  {
+    name: "cases",
+    label: "客户案例",
+    path: "/cases",
+    iconClass: "iconfont icon-database",
+    pathExp: /cases|selectedCase/,
+    componentPath: "views/cases/index.vue",
+    subMenu: [
+      {
+        name: "selectedCase",
+        label: "精选案例",
+        path: "/selectedCase",
+        componentPath: "views/cases/selectedCase/index.vue",
+      },
+    ]
+  },
+  {
+    name: "data",
+    label: "资料中心",
+    path: "/data",
+    iconClass: "iconfont icon-database",
+    pathExp: /data|knowledge|whitepaper/,
+    componentPath: "views/data/index.vue",
+    subMenu: [
+      {
+        name: "whitepaper",
+        label: "白皮书",
+        path: "/whitepaper",
+        componentPath: "views/data/whitepaper/index.vue",
+      },
+      {
+        name: "knowledge",
+        label: "知识库",
+        path: "/knowledge",
+        componentPath: "views/data/knowledge/index.vue",
+      },
+
+    ]
+  },
   {
     name: "about",
     label: "关于我们",
@@ -55,29 +95,6 @@ export default [
         path: "/news",
         iconClass: "iconfont icon-database",
         componentPath: "views/about/news/index.vue",
-      },
-
-    ]
-  },
-  {
-    name: "data",
-    label: "资料中心",
-    path: "/data",
-    iconClass: "iconfont icon-database",
-    pathExp: /data|knowledge|whitepaper/,
-    componentPath: "views/data/index.vue",
-    subMenu: [
-      {
-        name: "whitepaper",
-        label: "白皮书",
-        path: "/whitepaper",
-        componentPath: "views/data/whitepaper/index.vue",
-      },
-      {
-        name: "knowledge",
-        label: "知识库",
-        path: "/knowledge",
-        componentPath: "views/data/knowledge/index.vue",
       },
 
     ]

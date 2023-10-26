@@ -151,8 +151,10 @@ export default {
   mounted(){
     if(this.$route.query.uuid){
       this.isEditMode = true
+      this.$route.meta.title = document.title = '修改知识'
       this.queryCurrentKnowledge()
     }else{
+      this.$route.meta.title = document.title = '添加知识'
       this.isEditMode = false
     }
   }
