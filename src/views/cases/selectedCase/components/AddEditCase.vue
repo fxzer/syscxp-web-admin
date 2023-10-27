@@ -5,7 +5,7 @@
       <div class="new-item">
         <el-form-item label="封面" prop="cover">
           <el-upload class="cover" drag action="/website/api/uploadfile" :data="{
-            fileType: 'news'
+            fileType: 'cases'
           }" :show-file-list="false" :on-success="handleUploadSuccess" :before-upload="handleBeforeUpload">
             <img v-if="imageUrl" :src="imageUrl" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -68,7 +68,7 @@
 <script>
 import { copyObject } from '@/utils/common'
 
-import { createCases, updateCases, queryCases } from "@/api/cases";
+import { createCase, updateCase, queryCase } from "@/api/cases";
 export default {
   props: {
 
@@ -123,7 +123,7 @@ export default {
   methods: {
     handleUploadSuccess(_, file) {
       this.imageUrl = URL.createObjectURL(file.raw);
-      this.form.cover = 'news/' + file.name
+      this.form.cover = 'cases/' + file.name
     },
     handleBeforeUpload(file) {
       const isEnableType = ['image/jpeg', 'image/png', 'image/jpg', 'image/svg+xml'].includes(file.type);
@@ -151,7 +151,7 @@ export default {
           }
         ]
       }
-      const result = await queryCases(qobj)
+      const result = await queryCase(qobj)
       const currenCase = result.success ? result.inventories[0] : {}
       copyObject(currenCase, this.form)
       this.form.releaseDate = new Date(currenCase.releaseDate).getTime()
@@ -164,7 +164,7 @@ export default {
       this.$refs.form.validate(async (valid) => {
         if (valid) {
           this.wrapperLoading = true;
-          const fn = this.isEditMode ? updateCases : createCases
+          const fn = this.isEditMode ? updateCase : createCase
           //由于 productNames 找出对应的产品列表，再转字符串
           this.form.products = JSON.stringify(this.productList.filter(product => this.form.productNames.includes(product.name)))
           delete this.form.productNames //删除无用字段

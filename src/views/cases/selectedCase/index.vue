@@ -53,7 +53,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import { queryCases, deleteCases } from "@/api/cases";
+import { queryCase, deleteCase } from "@/api/cases";
 export default {
   props: {
 
@@ -78,7 +78,7 @@ export default {
       const { pageSize, currentPage } = this.paginationOptions;
       qobj.limit = pageSize;
       qobj.start = (currentPage - 1) * pageSize;
-      const result = await queryCases(qobj)
+      const result = await queryCase(qobj)
       this.dataList = result.success ? result.inventories.map(item =>  ({...item, products:this.parseProd(item.products)})) : []
      
       this.paginationOptions.total = result.success ? result.total : 0;
@@ -111,7 +111,7 @@ export default {
     /* 删除 */
     async deleteHandler(row) {
       this.wrapperLoading = true
-      const result = await deleteCases(row.uuid)
+      const result = await deleteCase(row.uuid)
       this.wrapperLoading = false
       if (result.success) {
         this.$notify({

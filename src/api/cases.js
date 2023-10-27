@@ -9,15 +9,15 @@ const apiUrl = {
   update: 'com.syscxp.header.website.cases.APIUpdateCaseMsg',
 }
 
-export function createCases(data) {
+export function createCase(data) {
   return requestWrapper(apiUrl.baseUrl, apiUrl.create, data);
 }
-export function queryCases(queryOptions) {
+export function queryCase(queryOptions) {
   return requestWrapper(apiUrl.baseUrl, apiUrl.query, queryOptions, true);
 }
-export function updateCases(data) {
+export function updateCase(data) {
   return requestWrapper(apiUrl.baseUrl, apiUrl.update, data);
 }
-export function deleteCases(uuid) {
+export function deleteCase(uuid) {
   return requestWrapper(apiUrl.baseUrl, apiUrl.delete, { uuid });
 }
