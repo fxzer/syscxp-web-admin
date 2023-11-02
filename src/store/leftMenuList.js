@@ -27,7 +27,7 @@ export default [
     label: "客户案例",
     path: "/cases",
     iconClass: "iconfont icon-database",
-    pathExp: /cases|selectedCase/,
+    pathExp: /cases|selectedCase|industryCase/,
     componentPath: "views/cases/index.vue",
     subMenu: [
       {
@@ -35,6 +35,12 @@ export default [
         label: "精选案例",
         path: "/selectedCase",
         componentPath: "views/cases/selectedCase/index.vue",
+      },
+      {
+        name: "industryCase",
+        label: "行业案例",
+        path: "/industryCase",
+        componentPath: "views/cases/industryCase/index.vue",
       },
     ]
   },

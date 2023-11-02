@@ -3,9 +3,9 @@
 
     <el-form :model="form" label-width="60px" :rules="formRules" ref="form">
       <el-form-item label="图片" prop="icon">
-        <el-upload class="avatar-uploader" action="/website/api/uploadfile"  drag :data="{
+        <el-upload class="avatar-uploader" action="/website/api/uploadfile" drag :data="{
           fileType: 'access'
-        }" :show-file-list="false" :on-success="handleUploadSuccess" :before-upload="handleBeforeUpload">
+        }" :show-file-list="false" :on-success="handleUploadSuccess" :before-upload="handleBeforeImageUpload">
           <img v-if="imageUrl" :src="imageUrl" class="avatar">
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
@@ -14,17 +14,18 @@
       <el-form-item label="标题" prop="title">
         <el-input v-model="form.title" placeholder="请输入标题" clearable></el-input>
       </el-form-item>
-      <el-form-item label="链接" prop="link" >
+      <el-form-item label="链接" prop="link">
         <el-select v-model="form.link" style="width: 100%;" placeholder="请选择跳转链接">
           <el-option-group v-for=" key  in linkGroupKeys" :key="key" :label="key">
-             <el-option v-for="link in linkGroup[key]" :key="link.uuid" :label="link.title" :value="link.path">
-          </el-option>
+            <el-option v-for="link in linkGroup[key]" :key="link.uuid" :label="link.title" :value="link.path">
+            </el-option>
           </el-option-group>
         </el-select>
 
       </el-form-item>
       <el-form-item label="描述" prop="description">
-        <el-input type="textarea" v-model="form.description" show-word-limit maxlength="50" placeholder="请输入描述"></el-input>
+        <el-input type="textarea" v-model="form.description" show-word-limit maxlength="50"
+          placeholder="请输入描述"></el-input>
       </el-form-item>
 
     </el-form>
@@ -44,11 +45,12 @@ export default {
       type: Boolean,
       default: false,
     },
-    currentRow:{
-      type:Object,
-      default:()=>({})
+    currentRow: {
+      type: Object,
+      default: () => ({})
     }
   },
+  inject: ['handleBeforeImageUpload'],
   data() {
     return {
       isEditMode: false,
@@ -81,38 +83,27 @@ export default {
         }
       });
     },
-    // 上传图片
-    handleUploadSuccess(_, file) {
-      this.imageUrl = URL.createObjectURL(file.raw);
-      this.form.icon = 'access/' + file.name
+    // 成功上传图片
+    handleUploadSuccess(url) {
+      this.form.icon = this.imageUrl = url
     },
-    handleBeforeUpload(file) {
-      const isEnableType = ['image/jpeg', 'image/png', 'image/jpg', 'image/svg+xml'].includes(file.type);
-      const isLt2M = file.size / 1024 / 1024 < 2;
-      if (!isEnableType) {
-        this.$message.error('上传图片只能是 【JPG、JPEG、PNG、SVG】格式!');
-      }
-      if (!isLt2M) {
-        this.$message.error('上传图片大小不能超过 2MB!');
-      }
-      return isLt2M;
-    },
+
     async querySolution() {
       const result = await querySolution({
-        limit:20,
+        limit: 20,
       })
-      this.linkGroup = result.success ? result.inventories.reduce((group,cur) =>{
-        group[cur.category] = group[cur.category] ? [...group[cur.category],cur] : [cur]
+      this.linkGroup = result.success ? result.inventories.reduce((group, cur) => {
+        group[cur.category] = group[cur.category] ? [...group[cur.category], cur] : [cur]
         return group
-      },{}) : {}
+      }, {}) : {}
     },
 
   },
   computed: {
-    linkGroupKeys(){
+    linkGroupKeys() {
       return Object.keys(this.linkGroup).reverse()
     },
-    title(){
+    title() {
       return this.currentRow.uuid ? '修改快捷入口' : '新增快捷入口'
     }
   },
@@ -123,15 +114,15 @@ export default {
           this.$refs.form.resetFields();
           this.$refs.form.clearValidate();
           await this.querySolution()
-          if(this.currentRow.uuid){
-            copyObject(this.currentRow,this.form )
+          if (this.currentRow.uuid) {
+            copyObject(this.currentRow, this.form)
             this.imageUrl = this.currentRow.icon
             this.isEditMode = true
-          }else{
+          } else {
             this.isEditMode = false
           }
         });
-      }else{
+      } else {
         this.imageUrl = ''
       }
     }
@@ -146,6 +137,7 @@ export default {
   cursor: pointer;
   position: relative;
   overflow: hidden;
+
   &:hover {
     border-color: #409EFF;
   }
@@ -154,6 +146,7 @@ export default {
 .avatar-uploader ::v-deep .el-upload .el-upload-dragger {
   width: 100px;
   height: 100px;
+
   .el-icon-plus {
     display: flex;
     align-items: center;

@@ -1,18 +1,11 @@
 <template>
   <div class="sdwan-app" :class="{ 'min-width': isLogin }">
     <LeftNav class="sdwan-nav" v-if="isLogin" />
-    <div
-      class="sdwan-container"
-      :class="{
-        'left-side-close': !leftMenuOpen,
-        'is-login-wrapper': !isLogin,
-      }"
-    >
-      <TopHeader
-        class="sdwan-header"
-        @logout="topLogout"
-        v-if="isLogin && $route.path !== '/overview'"
-      />
+    <div class="sdwan-container" :class="{
+      'left-side-close': !leftMenuOpen,
+      'is-login-wrapper': !isLogin,
+    }">
+      <TopHeader class="sdwan-header" @logout="topLogout" v-if="isLogin && $route.path !== '/overview'" />
       <div class="sdwan-main">
         <router-view />
       </div>
@@ -25,16 +18,28 @@ import TopHeader from "@/views/TopHeader.vue";
 import LeftNav from "@/views/LeftNav.vue";
 import Cookies from "js-cookie";
 import { mapMutations, mapState } from "vuex";
+import { Message } from 'element-ui';
 export default {
   name: "App",
   components: {
     TopHeader,
     LeftNav,
   },
-  provide:{
-    backendFileBasePath:'web_site_file/',
+  provide: {
+    backendFileBasePath: 'web_site_file/',
+    handleBeforeImageUpload(file) {
+      const isEnableType = ['image/jpeg', 'image/png', 'image/jpg', 'image/svg+xml'].includes(file.type);
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isEnableType) {
+        Message.error('上传图片只能是 【JPG、JPEG、PNG、SVG】格式!');
+      }
+      if (!isLt2M) {
+        Message.error('上传图片大小不能超过 2MB!');
+      }
+      return isLt2M;
+    }
   },
-  
+
   data() {
     return {
       isLogin: false,
@@ -106,15 +111,18 @@ export default {
   height: 100%;
   box-sizing: border-box;
 }
+
 .min-width {
   min-width: 1200px;
 }
+
 .sdwan-nav {
   //height: 100%;
   z-index: 1000;
   top: 0;
   bottom: 0;
 }
+
 .sdwan-container {
   position: relative;
   margin-left: 201px;
@@ -122,10 +130,12 @@ export default {
   display: flex;
   flex-direction: column;
   background: #f0f2f5;
+
   &.left-side-close {
     margin-left: 65px;
   }
 }
+
 .is-login-wrapper {
   margin: 0 !important;
 }
@@ -134,10 +144,10 @@ export default {
   flex: 0 0 60px;
   height: 60px;
 }
+
 .sdwan-main {
   padding: 5px 10px;
   flex: 1 0 0;
   overflow: auto;
 }
-
 </style>

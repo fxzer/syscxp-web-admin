@@ -6,7 +6,7 @@
         <el-form-item label="封面" prop="cover">
           <el-upload class="cover" drag action="/website/api/uploadfile" :data="{
             fileType: 'cases'
-          }" :show-file-list="false" :on-success="handleUploadSuccess" :before-upload="handleBeforeUpload">
+          }" :show-file-list="false" :on-success="handleUploadSuccess" :before-upload="handleBeforeImageUpload">
             <img v-if="imageUrl" :src="imageUrl" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
@@ -73,7 +73,7 @@ export default {
   props: {
 
   },
-  inject: ['backendFileBasePath',],
+  inject: ['backendFileBasePath','handleBeforeImageUpload'],
   data() {
     return {
       helpVisible: false,
@@ -121,21 +121,11 @@ export default {
     EditorHelp: () => import('@/views/EditorHelp.vue')
   },
   methods: {
-    handleUploadSuccess(_, file) {
-      this.imageUrl = URL.createObjectURL(file.raw);
-      this.form.cover = 'cases/' + file.name
+      // 成功上传图片
+      handleUploadSuccess(url) {
+        this.form.cover = this.imageUrl = url
     },
-    handleBeforeUpload(file) {
-      const isEnableType = ['image/jpeg', 'image/png', 'image/jpg', 'image/svg+xml'].includes(file.type);
-      const isLt2M = file.size / 1024 / 1024 < 2;
-      if (!isEnableType) {
-        this.$message.error('上传图片只能是 【JPG、JPEG、PNG、SVG】格式!');
-      }
-      if (!isLt2M) {
-        this.$message.error('上传图片大小不能超过 2MB!');
-      }
-      return isLt2M;
-    },
+
     handleChange(val) {
       this.form.content = val
     },
@@ -155,7 +145,6 @@ export default {
       const currenCase = result.success ? result.inventories[0] : {}
       copyObject(currenCase, this.form)
       this.form.releaseDate = new Date(currenCase.releaseDate).getTime()
-      this.form.cover = currenCase.cover.startsWith('http') ? currenCase.cover.split(this.backendFileBasePath)[1] : currenCase.cover
       this.imageUrl = currenCase.cover
       this.form.productNames = JSON.parse(currenCase.products).map(prod => prod.name)
       this.wrapperLoading = false

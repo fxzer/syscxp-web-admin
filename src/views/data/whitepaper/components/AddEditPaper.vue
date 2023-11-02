@@ -4,7 +4,7 @@
       <el-form-item label="封面" prop="cover">
         <el-upload class="cover" drag action="/website/api/uploadfile" :data="{
           fileType: 'paperimg'
-        }" :show-file-list="false" :on-success="handleUploadSuccess" :before-upload="handleBeforeUpload">
+        }" :show-file-list="false" :on-success="handleUploadSuccess" :before-upload="handleBeforeImageUpload">
           <img v-if="imageUrl" :src="imageUrl" class="avatar">
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
@@ -20,12 +20,10 @@
         }" show-word-limit maxlength="200" placeholder="请输入描述"></el-input>
       </el-form-item>
       <el-form-item label="文件" prop="fileLink">
-        <el-upload class="file-upload" drag :multiple="false" :limit="1" 
-        :on-exceed="handleLimit" action="/website/api/uploadfile"
-        :on-remove="handleRemoveFile"
-        :on-success="handleUploadSuccessFile" :data="{
-          fileType: 'paperfile'
-        }"  :fileList="fileList" :before-upload="handleBeforeUploadFile">
+        <el-upload class="file-upload" drag :multiple="false" :limit="1" :on-exceed="handleLimit"
+          action="/website/api/uploadfile" :on-remove="handleRemoveFile" :on-success="handleUploadSuccessFile" :data="{
+            fileType: 'paperfile'
+          }" :fileList="fileList" :before-upload="handleBeforeUploadFile">
           <i class="el-icon-upload"></i>
           <div class="el-upload__text">将文件拖到此处，或<em>点击上传，</em>只能上传【PDF】格式文件!</div>
         </el-upload>
@@ -52,7 +50,7 @@ export default {
       default: () => ({})
     }
   },
-  inject: ['backendFileBasePath'],
+  inject: ['backendFileBasePath', 'handleBeforeImageUpload'],
   data() {
     return {
       loading: false,
@@ -73,8 +71,8 @@ export default {
       fileList: []
     }
   },
-  computed:{
-    title(){
+  computed: {
+    title() {
       return this.currentRow.uuid ? '修改白皮书' : '新增白皮书'
     }
   },
@@ -86,32 +84,19 @@ export default {
     confirm() {
       this.$refs.form.validate(valid => {
         if (valid) {
-          if(this.isEditMode){
-            const { cover,fileLink } = this.form
-            this.form.cover = cover.startsWith('http') ? cover.split(this.backendFileBasePath)[1] : cover
-            this.form.fileLink =  fileLink.startsWith('http') ? fileLink.split(this.backendFileBasePath)[1] : fileLink
+          if (this.isEditMode) {
+            const {fileLink } = this.form
+            this.form.fileLink = fileLink.startsWith('http') ? fileLink.split(this.backendFileBasePath)[1] : fileLink
           }
-          this.$emit('done', this.form,this.isEditMode);
+          this.$emit('done', this.form, this.isEditMode);
         }
       });
     },
-    // 上传图片
-    handleUploadSuccess(_, file) {
-      this.imageUrl = URL.createObjectURL(file.raw);
-      this.form.cover = 'paperimg/' + file.name
+    // 成功上传图片
+    handleUploadSuccess(url) {
+      this.form.cover = this.imageUrl = url
     },
 
-    handleBeforeUpload(file) {
-      const isEnableType = ['image/jpeg', 'image/png', 'image/jpg', 'image/svg+xml'].includes(file.type);
-      const isLt2M = file.size / 1024 / 1024 < 2;
-      if (!isEnableType) {
-        this.$message.error('上传图片只能是 【JPG、JPEG、PNG、SVG】格式!');
-      }
-      if (!isLt2M) {
-        this.$message.error('上传图片大小不能超过 2MB!');
-      }
-      return isLt2M;
-    },
     // 上传文件
     handleUploadSuccessFile(_, file) {
       this.form.fileLink = 'paperfile/' + file.name
@@ -129,10 +114,10 @@ export default {
       }
       return isEnableType;
     },
-    handleLimit(){
+    handleLimit() {
       this.$message.error('只能上传一个文件!');
     },
-    handleRemoveFile(){
+    handleRemoveFile() {
       this.fileList.pop()
       this.form.fileLink = ''
     }
@@ -144,15 +129,15 @@ export default {
         this.$nextTick(async () => {
           this.$refs.form.resetFields();
           this.$refs.form.clearValidate();
-          if(this.currentRow.uuid){
+          if (this.currentRow.uuid) {
             this.isEditMode = true
             this.imageUrl = this.currentRow.cover;
             this.fileList = this.currentRow.fileLink ? [{
-            name: this.currentRow.fileLink.split('/').pop(),
-            url: this.currentRow.fileLink,
-          }] : [];
-          copyObject(this.currentRow, this.form)
-          }else{
+              name: this.currentRow.fileLink.split('/').pop(),
+              url: this.currentRow.fileLink,
+            }] : [];
+            copyObject(this.currentRow, this.form)
+          } else {
             this.isEditMode = false
           }
         });
@@ -180,10 +165,12 @@ export default {
   width: 150px;
   height: 200px;
 }
-.cover img{
+
+.cover img {
   width: 150px;
   height: 200px;
 }
+
 .file-upload ::v-deep .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;
@@ -218,4 +205,5 @@ export default {
   width: 100%;
   height: 100%;
   display: block;
-}</style>
+}
+</style>

@@ -5,7 +5,7 @@
       <el-form-item label="图片" prop="bgPath">
         <el-upload class="avatar-uploader" action="/website/api/uploadfile" drag :data="{
           fileType: 'banner'
-        }" :show-file-list="false" :on-success="handleUploadSuccess" :before-upload="handleBeforeUpload">
+        }" :show-file-list="false" :on-success="handleUploadSuccess" :before-upload="handleBeforeImageUpload">
           <img v-if="imageUrl" :src="imageUrl" class="avatar">
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
@@ -25,18 +25,13 @@
         <el-input v-model="form.btnText" placeholder="请输入按钮文本" clearable></el-input>
       </el-form-item>
       <el-form-item label="按钮链接" prop="btnLink">
-        <el-select
-          v-model="form.btnLink"
-          filterable
-          allow-create
-          default-first-option
-          style="width: 100%;"
+        <el-select v-model="form.btnLink" filterable allow-create default-first-option style="width: 100%;"
           placeholder="请输入或选择按钮跳转链接">
           <el-option-group v-for=" key  in linkGroupKeys" :key="key" :label="key">
             <el-option v-for="link in linkGroup[key]" :key="link.uuid" :label="link.title" :value="link.path">
-          </el-option>
+            </el-option>
           </el-option-group>
-          </el-select>
+        </el-select>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -61,6 +56,7 @@ export default {
       default: () => ({})
     }
   },
+  inject: ['handleBeforeImageUpload'],
   data() {
     return {
       loading: false,
@@ -91,55 +87,38 @@ export default {
     confirm() {
       this.$refs.form.validate(valid => {
         if (valid) {
-          if(this.isEditMode){
-            const { bgPath } = this.form
-           this.form.bgPath = bgPath.startsWith('http') ? bgPath.split(this.backendFileBasePath)[1] : bgPath
-          }
           this.$emit('done', this.form, this.isEditMode);
         }
       });
     },
     async querySolution(title) {
-      const qobj  = {
-        limit:20,
-        conditions:[]
+      const qobj = {
+        limit: 20,
+        conditions: []
       }
-      if(title){
+      if (title) {
         qobj.conditions.push({
-          name:'title',
-          op:'like',
+          name: 'title',
+          op: 'like',
           value: title
         })
       }
       const result = await querySolution(qobj)
-      this.linkGroup = result.success ? result.inventories.reduce((group,cur) =>{
-        group[cur.category] = group[cur.category] ? [...group[cur.category],cur] : [cur]
+      this.linkGroup = result.success ? result.inventories.reduce((group, cur) => {
+        group[cur.category] = group[cur.category] ? [...group[cur.category], cur] : [cur]
         return group
-      },{}) : {}
+      }, {}) : {}
     },
-    // 上传图片
-    handleUploadSuccess(_, file) {
-      this.imageUrl = URL.createObjectURL(file.raw);
-      this.form.bgPath = 'banner/' + file.name
+    // 成功上传图片
+    handleUploadSuccess(url) {
+      this.form.bgPath = this.imageUrl = url
     },
-    handleBeforeUpload(file) {
-      const isEnableType = ['image/jpeg', 'image/png', 'image/jpg', 'image/svg+xml'].includes(file.type);
-      const isLt2M = file.size / 1024 / 1024 < 2;
-      if (!isEnableType) {
-        this.$message.error('上传图片只能是 【JPG、JPEG、PNG、SVG】格式!');
-      }
-      if (!isLt2M) {
-        this.$message.error('上传图片大小不能超过 2MB!');
-      }
-      return isLt2M;
-    },
-
   },
   computed: {
-    linkGroupKeys(){
+    linkGroupKeys() {
       return Object.keys(this.linkGroup).reverse()
     },
-    title(){
+    title() {
       return this.currentRow.uuid ? '编辑首页轮播图' : '新增首页轮播图'
     }
   },
@@ -150,11 +129,11 @@ export default {
           this.$refs.form.resetFields();
           this.$refs.form.clearValidate();
           await this.querySolution()
-          if(this.currentRow.uuid){
+          if (this.currentRow.uuid) {
             this.isEditMode = true
             this.imageUrl = this.currentRow.bgPath
-           copyObject(this.currentRow, this.form) 
-          }else{
+            copyObject(this.currentRow, this.form)
+          } else {
             this.isEditMode = false
           }
         });
@@ -167,13 +146,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 .avatar-uploader ::v-deep .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;
   cursor: pointer;
   position: relative;
   overflow: hidden;
+
   &:hover {
     border-color: #409EFF;
   }
@@ -182,6 +161,7 @@ export default {
 .avatar-uploader ::v-deep .el-upload .el-upload-dragger {
   width: 475px;
   height: 200px;
+
   .el-icon-plus {
     display: flex;
     align-items: center;

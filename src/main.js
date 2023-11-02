@@ -19,7 +19,6 @@ Vue.use(vuescroll, {
     },
     name: "vuescroll",
 });
-// registerComponents(Vue);
 registerFilter(Vue);
 Vue.config.productionTip = false;
 

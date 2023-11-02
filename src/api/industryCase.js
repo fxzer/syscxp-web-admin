@@ -3,10 +3,11 @@
 import { requestWrapper } from './util';
 const apiUrl = {
   baseUrl: '/website/api',
-  query: 'com.syscxp.header.website.cases.APIQueryCaseMsg',
-  create: 'com.syscxp.header.website.cases.APICreateCaseMsg',
-  delete: 'com.syscxp.header.website.cases.APIDeleteCaseMsg',
-  update: 'com.syscxp.header.website.cases.APIUpdateCaseMsg',
+  query: 'com.syscxp.header.website.type.APIQueryTypeMsg',
+  create: 'com.syscxp.header.website.type.APICreateTypeMsg',
+  delete: 'com.syscxp.header.website.type.APIDeleteTypeMsg',
+  update: 'com.syscxp.header.website.type.APIUpdateTypeMsg',
+  queryTypeList:'com.syscxp.header.website.type.APIQueryTypeListMsg'
 }
 
 export function createCase(data) {
@@ -20,5 +21,8 @@ export function updateCase(data) {
 }
 export function deleteCase(uuid) {
   return requestWrapper(apiUrl.baseUrl, apiUrl.delete, { uuid });
+}
+export function queryTypeList() {
+  return requestWrapper(apiUrl.baseUrl, apiUrl.queryTypeList, {  });
 }
 

@@ -1,7 +1,4 @@
 import { moment,  duration} from './common';
-export function registerComponents(Vue) {
-    console.log("[ Vue ]-30", Vue);
-}
 
 export function registerFilter(Vue) {
     Vue.filter('date', moment);

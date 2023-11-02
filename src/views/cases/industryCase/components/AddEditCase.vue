@@ -1,25 +1,34 @@
 <template>
-  <el-dialog :close-on-click-modal="false" :title="title" :visible="visible" width="500px" @close="close">
-    <el-form :model="form" label-width="60px" :rules="formRules" ref="form">
-      <el-form-item label="分类" prop="name">
-        <el-radio-group v-model="form.type" size="medium">
-          <el-radio-button label="权威资质">权威资质</el-radio-button>
-          <el-radio-button label="荣誉资质">荣誉资质</el-radio-button>
-        </el-radio-group>
-
+  <el-dialog :close-on-click-modal="false" :title="title" :visible="visible" width="520px" @close="close">
+    <el-form :model="form" label-width="100px" :rules="formRules" ref="form">
+      <el-form-item label="案例分类" prop="type">
+        <el-select style="width: 100%;" v-model="form.type" clearable filterable allow-create default-first-option
+          placeholder="请选择已有分类 或 输入新分类并选择它">
+          <el-option v-for="item,index in caseTypeList" :key="index" :label="item" :value="item">
+          </el-option>
+        </el-select>
       </el-form-item>
-      <el-form-item label="图片" prop="icon">
+      <el-form-item label="企业LOGO" prop="logo">
         <el-upload class="avatar-uploader" action="/website/api/uploadfile" drag :data="{
-          fileType: 'qualification'
+          fileType: 'industryCase'
         }" :show-file-list="false" :on-success="handleUploadSuccess" :before-upload="handleBeforeImageUpload">
           <img v-if="imageUrl" :src="imageUrl" class="avatar">
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
       </el-form-item>
-
-      <el-form-item label="名称" prop="name">
-        <el-input v-model="form.name" placeholder="请输入资质名称" clearable></el-input>
+      <el-form-item label="企业名称" prop="company">
+        <el-input v-model="form.company" placeholder="请输入企业名称" clearable></el-input>
       </el-form-item>
+      <el-form-item label="企业概述" prop="outline">
+        <el-input v-model="form.outline" placeholder="请输入企业概述" clearable></el-input>
+      </el-form-item>
+      <el-form-item label="企业描述" prop="description">
+        <el-input type="textarea" v-model="form.description" :autosize="{
+          minRows: 4,
+        }" show-word-limit maxlength="200" placeholder="请输入企业描述"></el-input>
+      </el-form-item>
+
+
 
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -31,7 +40,7 @@
 
 <script>
 import { copyObject } from '@/utils/common'
-
+import { queryTypeList } from "@/api/industryCase";
 export default {
   props: {
     visible: {
@@ -43,28 +52,33 @@ export default {
       default: () => ({})
     }
   },
-  inject: ['backendFileBasePath', 'handleBeforeImageUpload'],
+  inject: ['handleBeforeImageUpload'],
   data() {
     return {
       loading: false,
       isEditMode: false,
       form: {
-        type: '权威资质',
-        imgSrc: '',
-        name: '',
+        logo: "",
+        type: "",
+        outline: "",
+        company: "",
+        description: "",
       },
+      caseTypeList: [],
       imageUrl: '',
       formRules: {
         type: [{ required: true, message: '请选择分类', trigger: 'blur' },],
-        name: [{ required: true, message: '请输入名称', trigger: 'blur' },],
-        imgSrc: [{ required: true, message: '请上传图片', trigger: 'blur' },],
+        outline: [{ required: true, message: '请输入企业概述', trigger: 'blur' },],
+        company: [{ required: true, message: '请输入企业名称', trigger: 'blur' },],
+        description: [{ required: true, message: '请输入企业描述', trigger: 'blur' },],
+        logo: [{ required: true, message: '请上传图片', trigger: 'blur' },],
       },
       linkGroup: [],
     }
   },
   computed: {
     title() {
-      return this.currentRow.uuid ? '修改专业资质' : '新增专业资质'
+      return this.currentRow.uuid ? '修改行业案例' : '新增行业案例'
     }
   },
   methods: {
@@ -81,9 +95,13 @@ export default {
     },
     // 成功上传图片
     handleUploadSuccess(url) {
-      this.form.imgSrc = this.imageUrl = url
+      this.form.logo = this.imageUrl = url
     },
 
+    async queryTypeList() {
+      const { typeList = [] } = await queryTypeList()
+      this.caseTypeList = typeList
+    },
   },
   watch: {
     visible(val) {
@@ -91,9 +109,10 @@ export default {
         this.$nextTick(async () => {
           this.$refs.form.resetFields();
           this.$refs.form.clearValidate();
+          await this.queryTypeList()
           if (this.currentRow.uuid) {
             this.isEditMode = true
-            this.imageUrl = this.currentRow.imgSrc
+            this.imageUrl = this.currentRow.logo
             copyObject(this.currentRow, this.form)
           } else {
             this.isEditMode = false
@@ -122,7 +141,7 @@ export default {
 
 .avatar-uploader ::v-deep .el-upload .el-upload-dragger {
   width: 150px;
-  height: 200px;
+  height: 150px;
 
   .el-icon-plus {
     display: flex;
