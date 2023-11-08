@@ -7,7 +7,7 @@
         <span>资质分类：</span>
         <el-select v-model="caseType" size="medium" placeholder="请选择行业分类" @change="caseTypeChange">
           <el-option value="全部">全部 </el-option>
-          <el-option :value="caseType" v-for="caseType,index in typeList" :key="index">{{ caseType }} </el-option>
+          <el-option :value="caseType" v-for="caseType, index in typeList" :key="index">{{ caseType }} </el-option>
         </el-select>
       </div>
 
@@ -23,7 +23,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="company" label="企业名称"></el-table-column>
-        <el-table-column prop="outline" label="企业概述" ></el-table-column>
+        <el-table-column prop="outline" label="企业概述"></el-table-column>
         <el-table-column prop="description" label="企业描述" min-width="220"></el-table-column>
         <el-table-column prop="createDate" label="创建时间" width="140px">
           <template slot-scope='{row}'>
@@ -62,7 +62,7 @@ export default {
       gridLoading: false,
       addEditVisible: false,
       caseType: '全部',
-      typeList:[],
+      typeList: [],
       paginationOptions: {
         currentPage: 1,
         pageSize: 20,
