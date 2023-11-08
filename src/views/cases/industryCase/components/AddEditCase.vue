@@ -24,8 +24,8 @@
       </el-form-item>
       <el-form-item label="企业描述" prop="description">
         <el-input type="textarea" v-model="form.description" :autosize="{
-          minRows: 4,
-        }" show-word-limit maxlength="200" placeholder="请输入企业描述"></el-input>
+          minRows: 5,
+        }" show-word-limit maxlength="400" placeholder="请输入企业描述"></el-input>
       </el-form-item>
 
 

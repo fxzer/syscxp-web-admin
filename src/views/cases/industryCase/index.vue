@@ -15,23 +15,23 @@
     <div class="grid-wrapper">
       <el-table v-loading="gridLoading" :data="dataList" stripe class="width-percent-100"
         :header-cell-style="headerCellLayout" :cell-style="cellLayout">
-        <el-table-column type="index" label="序号" width="100"></el-table-column>
-        <el-table-column prop="logo" label="企业LOGO">
+        <el-table-column type="index" label="序号" width="60"></el-table-column>
+        <el-table-column prop="type" label="案例分类" width="80"></el-table-column>
+        <el-table-column prop="logo" label="企业LOGO" width="90">
           <template slot-scope='{row}'>
             <img :src="row.logo" class="cover">
           </template>
         </el-table-column>
         <el-table-column prop="company" label="企业名称"></el-table-column>
-        <el-table-column prop="outline" label="企业概述"></el-table-column>
-        <el-table-column prop="description" label="企业描述"></el-table-column>
-        <el-table-column prop="type" label="案例分类"></el-table-column>
-        <el-table-column prop="createDate" label="创建时间" width="160px">
+        <el-table-column prop="outline" label="企业概述" ></el-table-column>
+        <el-table-column prop="description" label="企业描述" min-width="220"></el-table-column>
+        <el-table-column prop="createDate" label="创建时间" width="140px">
           <template slot-scope='{row}'>
             {{ row.createDate | date }}
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" width="200" fixed="right">
+        <el-table-column label="操作" width="160" fixed="right">
           <template slot-scope="{ row }">
             <el-button type="primary" size="mini" style="margin-right:10px;" @click="openAddOrEdit(row)">修改</el-button>
             <el-popconfirm title="确定删除吗？" @confirm="deleteHandler(row)">
@@ -94,6 +94,7 @@ export default {
       const { pageSize, currentPage } = this.paginationOptions;
       qobj.limit = pageSize;
       qobj.start = (currentPage - 1) * pageSize;
+      this.queryTypeList()
       const result = await queryCase(qobj)
       this.dataList = result.success ? result.inventories : []
       this.paginationOptions.total = result.success ? result.total : 0;
