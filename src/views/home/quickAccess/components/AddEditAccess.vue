@@ -84,8 +84,9 @@ export default {
       });
     },
     // 成功上传图片
-    handleUploadSuccess(url) {
-      this.form.icon = this.imageUrl = url
+    handleUploadSuccess(url,file) {
+      this.form.icon  = url
+      this.imageUrl = URL.createObjectURL(file.raw);
     },
 
     async querySolution() {

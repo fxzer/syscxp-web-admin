@@ -110,8 +110,9 @@ export default {
       }, {}) : {}
     },
     // 成功上传图片
-    handleUploadSuccess(url) {
-      this.form.bgPath = this.imageUrl = url
+    handleUploadSuccess(url,file) {
+      this.form.bgPath = url
+      this.imageUrl = URL.createObjectURL(file.raw);
     },
   },
   computed: {

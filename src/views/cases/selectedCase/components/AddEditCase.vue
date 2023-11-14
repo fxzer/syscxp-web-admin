@@ -122,8 +122,9 @@ export default {
   },
   methods: {
       // 成功上传图片
-      handleUploadSuccess(url) {
-        this.form.cover = this.imageUrl = url
+      handleUploadSuccess(url,file) {
+        this.form.cover  = url
+        this.imageUrl = URL.createObjectURL(file.raw);
     },
 
     handleChange(val) {
