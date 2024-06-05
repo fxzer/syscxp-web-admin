@@ -100,7 +100,7 @@ export default {
           icon: '',
         },
         {
-          name: 'SD-WAN 2.0',
+          name: 'SD-WAN',
           path: '/product/hybridWan',
           icon: '',
         },

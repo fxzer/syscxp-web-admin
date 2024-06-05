@@ -105,4 +105,44 @@ export default [
 
     ]
   },
+  {
+    name: "land",
+    label: "落地页",
+    path: "/land",
+    iconClass: "iconfont icon-database",
+    pathExp: /banner|advantage|case|painpoint|solution/,
+    subMenu: [
+      {
+        name: "banner",
+        label: "横幅",
+        path: "/banner",
+        componentPath: "views/land/banner/index.vue",
+      },
+      {
+        name: "painpoint",
+        label: "企业痛点",
+        path: "/painpoint",
+        componentPath: "views/land/painpoint/index.vue",
+      },
+      {
+        name: "solution",
+        label: "解决方案",
+        path: "/solution",
+        componentPath: "views/land/solution/index.vue",
+      },
+      {
+        name: "advantage",
+        label: "方案优势",
+        path: "/advantage",
+        componentPath: "views/land/advantage/index.vue",
+      },
+      {
+        name: "case",
+        label: "客户案例",
+        path: "/case",
+        componentPath: "views/land/case/index.vue",
+      }
+
+    ]
+  },
 ];
