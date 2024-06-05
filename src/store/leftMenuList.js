@@ -26,7 +26,7 @@ export default [
     name: "cases",
     label: "客户案例",
     path: "/cases",
-    iconClass: "iconfont icon-database",
+    iconClass: "iconfont icon-suitcase",
     pathExp: /cases|selectedCase|industryCase/,
     componentPath: "views/cases/index.vue",
     subMenu: [
@@ -109,7 +109,7 @@ export default [
     name: "land",
     label: "落地页",
     path: "/land",
-    iconClass: "iconfont icon-database",
+    iconClass: "iconfont icon-page",
     pathExp: /banner|advantage|case|painpoint|solution/,
     subMenu: [
       {

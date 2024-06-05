@@ -99,7 +99,11 @@ export default {
       const data  = result.success ? result.inventories[0] : {}
       if(data){
         copyObject(data,this.form);
-        this.descList = JSON.parse(data.description.replace('\\"','"') || '[]');
+        try {
+          this.descList = JSON.parse(data.description.replace('\\"','"') || '[]');
+        } catch (error) {
+          this.descList = [data.description]
+        }
       }
     }
   },

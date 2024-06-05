@@ -1,0 +1,93 @@
+{
+  "id": "4182997",
+  "name": "cxp-web-new",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "319252",
+      "name": "page",
+      "font_class": "page",
+      "unicode": "e61e",
+      "unicode_decimal": 58910
+    },
+    {
+      "icon_id": "7736410",
+      "name": "suitcase",
+      "font_class": "suitcase",
+      "unicode": "e91f",
+      "unicode_decimal": 59679
+    },
+    {
+      "icon_id": "128889",
+      "name": "database",
+      "font_class": "database",
+      "unicode": "e755",
+      "unicode_decimal": 59221
+    },
+    {
+      "icon_id": "2515702",
+      "name": "about",
+      "font_class": "about",
+      "unicode": "e7a6",
+      "unicode_decimal": 59302
+    },
+    {
+      "icon_id": "4936656",
+      "name": "home-fill",
+      "font_class": "home-fill",
+      "unicode": "e867",
+      "unicode_decimal": 59495
+    },
+    {
+      "icon_id": "10330645",
+      "name": "view",
+      "font_class": "view",
+      "unicode": "e65e",
+      "unicode_decimal": 58974
+    },
+    {
+      "icon_id": "13253853",
+      "name": "time",
+      "font_class": "time",
+      "unicode": "e611",
+      "unicode_decimal": 58897
+    },
+    {
+      "icon_id": "745610",
+      "name": "返回顶部",
+      "font_class": "toolbar-top",
+      "unicode": "e644",
+      "unicode_decimal": 58948
+    },
+    {
+      "icon_id": "16619106",
+      "name": "电 话",
+      "font_class": "dianhua",
+      "unicode": "e6dc",
+      "unicode_decimal": 59100
+    },
+    {
+      "icon_id": "509332",
+      "name": "信息",
+      "font_class": "xinxi",
+      "unicode": "e646",
+      "unicode_decimal": 58950
+    },
+    {
+      "icon_id": "657541",
+      "name": "分期－微信",
+      "font_class": "weixin1",
+      "unicode": "e65d",
+      "unicode_decimal": 58973
+    },
+    {
+      "icon_id": "7134310",
+      "name": "官网-手机",
+      "font_class": "cxp-phone",
+      "unicode": "e6d2",
+      "unicode_decimal": 59090
+    }
+  ]
+}
